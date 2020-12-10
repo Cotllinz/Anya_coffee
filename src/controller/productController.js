@@ -4,14 +4,49 @@ const {
   AddSizeidModel,
   getProductbyId,
   UpdateProductModel,
-  UpdateProductSize
+  UpdateProductSizeModel,
+  deleteProductModel,
+  deleteSizeProductModel,
+  getProductCount
 } = require('../model/productModel')
 const helper = require('../helper/response')
+const qs = require('querystring')
 module.exports = {
   getProduct: async (req, res) => {
     try {
-      const resultProduct = await getProductModel()
-      return helper.response(res, 200, 'Succes GET Product', resultProduct)
+      /* Paging Main Product and Sorting Product By Category */
+      let { page, limit, category, search } = req.query
+      page = parseInt(page)
+      limit = parseInt(limit)
+      category = parseInt(category)
+      const totalProduct = await getProductCount(category)
+      const totalPage = Math.ceil(totalProduct / limit)
+      const offset = page * limit - limit
+      const prevLink =
+        page > 1 ? qs.stringify({ ...req.query, ...{ page: page - 1 } }) : null
+      const nextLink =
+        page < totalPage
+          ? qs.stringify({ ...req.query, ...{ page: page + 1 } })
+          : null
+      /* ======================================= */
+
+      const newPage = {
+        page,
+        limit,
+        totalPage,
+        category,
+        totalProduct,
+        nextLink: nextLink && `http://localhost:3000/product?${nextLink}`,
+        prevLink: prevLink && `http://localhost:3000/product?${prevLink}`
+      }
+      const resultProduct = await getProductModel(category, limit, offset)
+      return helper.response(
+        res,
+        200,
+        'Succes GET Product',
+        resultProduct,
+        newPage
+      )
     } catch (err) {
       return helper.response(res, 400, 'Invalid GET Product', err)
     }
@@ -40,8 +75,7 @@ module.exports = {
         priceProduct &&
         descProduct &&
         qtyProduct &&
-        categoryId &&
-        promoId
+        categoryId
       ) {
         if (categoryId > 0 && categoryId <= 5) {
           const addData = {
@@ -65,10 +99,10 @@ module.exports = {
             size_200: size200 || 'OFF',
             size_350: size350 || 'OFF',
             size_400: size400 || 'OFF',
-            status_product: resultAddData.statusProduct
+            status_product: resultAddData.status_product
           }
-          await AddSizeidModel(AddSize)
-          return helper.response(res, 200, 'Succes Add Product', resultAddData)
+          const result = await AddSizeidModel(AddSize)
+          return helper.response(res, 200, 'Succes Add Product', result)
         } else {
           return helper.response(
             res,
@@ -126,8 +160,7 @@ module.exports = {
           priceProduct &&
           descProduct &&
           qtyProduct &&
-          categoryId &&
-          promoId
+          categoryId
         ) {
           if (categoryId > 0 && categoryId <= 5) {
             const updateData = {
@@ -150,9 +183,9 @@ module.exports = {
               size_200: size200 || 'OFF',
               size_350: size350 || 'OFF',
               size_400: size400 || 'OFF',
-              status_product: resultUpdateData.statusProduct
+              status_product: resultUpdateData.status_product
             }
-            await UpdateProductSize(updateSize, id)
+            await UpdateProductSizeModel(updateSize, id)
             return helper.response(
               res,
               200,
@@ -178,6 +211,29 @@ module.exports = {
       }
     } catch (err) {
       return helper.response(res, 400, 'Invalid Update Product', err)
+    }
+  },
+  deleteProduct: async (req, res) => {
+    try {
+      const { id } = req.params
+      const checkId = await getProductbyId(id)
+
+      if (checkId.length > 0) {
+        const deleteData = {
+          delete_at: new Date(),
+          status_product: 'OFF'
+        }
+        const deleteResult = await deleteProductModel(deleteData, id)
+        const deleteSize = {
+          status_product: deleteResult.status_product
+        }
+        await deleteSizeProductModel(deleteSize, id)
+        return helper.response(res, 200, `Succes Delete Product ${id}`)
+      } else {
+        return helper.response(res, 404, `Product by Id : ${id} Not Found`)
+      }
+    } catch (err) {
+      return helper.response(res, 400, 'Invalid Delete Product', err)
     }
   }
 }
