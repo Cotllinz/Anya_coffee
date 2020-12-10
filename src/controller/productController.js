@@ -19,7 +19,12 @@ module.exports = {
       page = parseInt(page)
       limit = parseInt(limit)
       category = parseInt(category)
-      const totalProduct = await getProductCount(category)
+      let totalProduct
+      if (category) {
+        totalProduct = await getProductCount(category)
+      } else {
+        totalProduct = await getProductCount()
+      }
       const totalPage = Math.ceil(totalProduct / limit)
       const offset = page * limit - limit
       const prevLink =
