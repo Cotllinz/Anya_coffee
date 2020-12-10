@@ -1,3 +1,6 @@
-const route = require('express').Router()
+const routeing = require('express').Router()
+const product = require('./routes/productRoute')
 
-module.exports = route
+routeing.use('/product', product)
+
+module.exports = routeing
