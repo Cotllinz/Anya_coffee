@@ -4,15 +4,27 @@ module.exports = {
   /* Get Product */
   getProductModel: (category, limit, offset) => {
     return new Promise((resolve, reject) => {
-      connection.query(
-        'SELECT * FROM main_product JOIN category_product ON main_product.category_id = category_product.id_category WHERE category_product.id_category = ? && main_product.status_product = "ON" LIMIT ? OFFSET ?',
-        [category, limit, offset],
-        (err, result) => {
-          /* console.log(result)
+      if (category) {
+        connection.query(
+          'SELECT * FROM main_product JOIN category_product ON main_product.category_id = category_product.id_category WHERE category_product.id_category = ? && main_product.status_product = "ON" LIMIT ? OFFSET ?',
+          [category, limit, offset],
+          (err, result) => {
+            /* console.log(result)
         console.log(err) */
-          !err ? resolve(result) : reject(new Error(err))
-        }
-      )
+            !err ? resolve(result) : reject(new Error(err))
+          }
+        )
+      } else {
+        connection.query(
+          'SELECT * FROM main_product JOIN category_product ON main_product.category_id = category_product.id_category WHERE main_product.status_product = "ON" LIMIT ? OFFSET ?',
+          [limit, offset],
+          (err, result) => {
+            /* console.log(result)
+        console.log(err) */
+            !err ? resolve(result) : reject(new Error(err))
+          }
+        )
+      }
     })
   },
   /* Add Product */
@@ -135,13 +147,22 @@ module.exports = {
   },
   getProductCount: (category) => {
     return new Promise((resolve, reject) => {
-      connection.query(
-        'select count(*) as total from main_product where status_product = "ON" && category_id = ?',
-        category,
-        (err, result) => {
-          !err ? resolve(result[0].total) : reject(new Error(err))
-        }
-      )
+      if (category) {
+        connection.query(
+          'select count(*) as total from main_product where status_product = "ON" && category_id = ?',
+          category,
+          (err, result) => {
+            !err ? resolve(result[0].total) : reject(new Error(err))
+          }
+        )
+      } else {
+        connection.query(
+          'select count(*) as total from main_product where status_product = "ON"',
+          (err, result) => {
+            !err ? resolve(result[0].total) : reject(new Error(err))
+          }
+        )
+      }
     })
   }
 }
