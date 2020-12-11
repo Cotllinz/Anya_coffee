@@ -2,15 +2,25 @@ const connection = require('../config/mysql')
 
 module.exports = {
   /* Get Product */
-  getProductModel: (category, limit, offset) => {
+  getProductModel: (category, limit, offset, search) => {
     return new Promise((resolve, reject) => {
       if (category) {
         connection.query(
-          'SELECT * FROM main_product JOIN category_product ON main_product.category_id = category_product.id_category WHERE category_product.id_category = ? && main_product.status_product = "ON" LIMIT ? OFFSET ?',
+          'SELECT * FROM main_product JOIN category_product ON main_product.category_id = category_product.id_category JOIN size_typeproduct on main_product.category_id = size_typeproduct.size_id WHERE category_product.id_category = ? && main_product.status_product = "ON" LIMIT ? OFFSET ?',
           [category, limit, offset],
           (err, result) => {
             /* console.log(result)
         console.log(err) */
+            !err ? resolve(result) : reject(new Error(err))
+          }
+        )
+      } else if (search) {
+        connection.query(
+          `SELECT * FROM main_product JOIN category_product ON main_product.category_id = category_product.id_category WHERE main_product.status_product = "ON" && main_product.name_product LIKE "%${search}%" limit ? offset ?`,
+          [limit, offset],
+          (err, result) => {
+            /* console.log(result)
+            console.log(err) */
             !err ? resolve(result) : reject(new Error(err))
           }
         )
@@ -145,12 +155,20 @@ module.exports = {
       )
     })
   },
-  getProductCount: (category) => {
+  getProductCount: (category, search) => {
     return new Promise((resolve, reject) => {
+      /* Count Catagory */
       if (category) {
         connection.query(
           'select count(*) as total from main_product where status_product = "ON" && category_id = ?',
           category,
+          (err, result) => {
+            !err ? resolve(result[0].total) : reject(new Error(err))
+          }
+        )
+      } else if (search) {
+        connection.query(
+          `select count(*) as total from main_product where status_product = "ON" && main_product.name_product LIKE "%${search}%"`,
           (err, result) => {
             !err ? resolve(result[0].total) : reject(new Error(err))
           }

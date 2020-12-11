@@ -12,4 +12,5 @@ route.post('/', AddProduct)
 route.get('/:id', getProductById)
 route.patch('/:id', updateProduct)
 route.patch('/delete/:id', deleteProduct)
+
 module.exports = route
