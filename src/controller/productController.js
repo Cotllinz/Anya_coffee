@@ -16,15 +16,12 @@ module.exports = {
     try {
       /* Paging Main Product and Sorting Product By Category */
       let { page, limit, category, search } = req.query
-      page = parseInt(page)
+      /* Get Size Product Belum */
+      const getPage = search ? (page = 1) : page
+      page = parseInt(getPage)
       limit = parseInt(limit)
       category = parseInt(category)
-      let totalProduct
-      if (category) {
-        totalProduct = await getProductCount(category)
-      } else {
-        totalProduct = await getProductCount()
-      }
+      const totalProduct = await getProductCount(category, search)
       const totalPage = Math.ceil(totalProduct / limit)
       const offset = page * limit - limit
       const prevLink =
@@ -44,7 +41,12 @@ module.exports = {
         nextLink: nextLink && `http://localhost:3000/product?${nextLink}`,
         prevLink: prevLink && `http://localhost:3000/product?${prevLink}`
       }
-      const resultProduct = await getProductModel(category, limit, offset)
+      const resultProduct = await getProductModel(
+        category,
+        limit,
+        offset,
+        search
+      )
       return helper.response(
         res,
         200,
@@ -65,7 +67,6 @@ module.exports = {
         descProduct,
         qtyProduct,
         categoryId,
-        promoId,
         statusProduct,
         sizeL,
         sizeR,
@@ -74,6 +75,8 @@ module.exports = {
         size350,
         size400
       } = req.body
+      const size = [sizeL, sizeR, sizeXL, size200, size350, size400]
+      const NewSize = size.filter((e) => e === 'ON')
       if (
         nameProduct &&
         imageProduct &&
@@ -82,37 +85,50 @@ module.exports = {
         qtyProduct &&
         categoryId
       ) {
-        if (categoryId > 0 && categoryId <= 5) {
-          const addData = {
-            name_product: nameProduct,
-            image_product: imageProduct,
-            price_product: priceProduct,
-            desc_product: descProduct,
-            qty_product: qtyProduct,
-            category_id: categoryId,
-            promo_id: promoId,
-            status_product: statusProduct || 'ON',
-            create_at: new Date()
-          }
+        if (NewSize.length >= 2) {
+          if (categoryId > 0 && categoryId <= 5) {
+            const addData = {
+              name_product: nameProduct,
+              image_product: imageProduct,
+              price_product: priceProduct,
+              desc_product: descProduct,
+              qty_product: qtyProduct,
+              category_id: categoryId,
+              status_product: statusProduct || 'ON',
+              create_at: new Date()
+            }
 
-          const resultAddData = await AddProductModel(addData)
-          const AddSize = {
-            size_id: resultAddData.id_product,
-            size_L: sizeL || 'OFF',
-            size_R: sizeR || 'OFF',
-            size_XL: sizeXL || 'OFF',
-            size_200: size200 || 'OFF',
-            size_350: size350 || 'OFF',
-            size_400: size400 || 'OFF',
-            status_product: resultAddData.status_product
+            const resultAddData = await AddProductModel(addData)
+            const AddSize = {
+              id_sizeProduct: resultAddData.id_product,
+              size_L: sizeL || 'OFF',
+              size_R: sizeR || 'OFF',
+              size_XL: sizeXL || 'OFF',
+              size_200: size200 || 'OFF',
+              size_350: size350 || 'OFF',
+              size_400: size400 || 'OFF',
+              type: 'Product',
+              status_product: resultAddData.status_product
+            }
+            await AddSizeidModel(AddSize)
+            return helper.response(
+              res,
+              200,
+              'Succes Add Product',
+              resultAddData
+            )
+          } else {
+            return helper.response(
+              res,
+              404,
+              'Category cant be below 0 or above 5!! check again'
+            )
           }
-          const result = await AddSizeidModel(AddSize)
-          return helper.response(res, 200, 'Succes Add Product', result)
         } else {
           return helper.response(
             res,
             404,
-            'Category cant be below 0 or above 5!! check again'
+            'Can You Input Size Minimum 2 Size Please'
           )
         }
       } else {
@@ -148,7 +164,6 @@ module.exports = {
         descProduct,
         qtyProduct,
         categoryId,
-        promoId,
         statusProduct,
         sizeL,
         sizeR,
@@ -175,7 +190,6 @@ module.exports = {
               desc_product: descProduct,
               qty_product: qtyProduct,
               category_id: categoryId,
-              promo_id: promoId,
               status_product: statusProduct || 'ON',
               update_at: new Date()
             }
