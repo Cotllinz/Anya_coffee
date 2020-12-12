@@ -6,7 +6,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       if (category) {
         connection.query(
-          'SELECT * FROM main_product JOIN category_product ON main_product.category_id = category_product.id_category JOIN size_typeproduct on main_product.category_id = size_typeproduct.size_id WHERE category_product.id_category = ? && main_product.status_product = "ON" LIMIT ? OFFSET ?',
+          'SELECT * FROM main_product JOIN category_product ON main_product.category_id = category_product.id_category JOIN size_typeproduct on main_product.category_id = size_typeproduct.id_sizeProduct WHERE category_product.id_category = ? && main_product.status_product = "ON" LIMIT ? OFFSET ?',
           [category, limit, offset],
           (err, result) => {
             /* console.log(result)
@@ -44,7 +44,8 @@ module.exports = {
         'insert into main_product set ?',
         data,
         (err, result) => {
-          /*    console.log(result) */
+          /*  console.log(result)
+          console.log(err) */
           const NewResult = {
             id_product: result.insertId,
             ...data
@@ -64,6 +65,8 @@ module.exports = {
           const newResult = {
             ...data
           }
+          /*  console.log(newResult)
+          console.log(err) */
           !err ? resolve(newResult) : reject(new Error(err))
         }
       )
@@ -105,14 +108,14 @@ module.exports = {
   UpdateProductSizeModel: (data, id) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        'update size_typeproduct set ? where size_id = ?',
+        'update size_typeproduct set ? where id_sizeProduct = ? && type = "Product"',
         [data, id],
         (err, result) => {
           const newResult = {
-            size_id: id,
+            id_sizeProduct: id,
             ...data
           }
-          /* console.log(newResult)
+          /*  console.log(newResult)
           console.log(err) */
           !err ? resolve(newResult) : reject(new Error(err))
         }
@@ -141,11 +144,11 @@ module.exports = {
   deleteSizeProductModel: (data, id) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        'update size_typeproduct set ? where size_id = ?',
+        'update size_typeproduct set ? where id_sizeProduct = ? && type = "Product"',
         [data, id],
         (err, result) => {
           const newResult = {
-            size_id: id,
+            id_sizeProduct: id,
             ...data
           }
           /* console.log(newResult)
