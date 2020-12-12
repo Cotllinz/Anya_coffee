@@ -2,39 +2,60 @@ const connection = require('../config/mysql')
 
 module.exports = {
   /* Get Product */
-  getProductModel: (category, limit, offset, search) => {
+  getProductModel: () => {
     return new Promise((resolve, reject) => {
-      if (category) {
-        connection.query(
-          'SELECT * FROM main_product JOIN category_product ON main_product.category_id = category_product.id_category JOIN size_typeproduct on main_product.category_id = size_typeproduct.id_sizeProduct WHERE category_product.id_category = ? && main_product.status_product = "ON" LIMIT ? OFFSET ?',
-          [category, limit, offset],
-          (err, result) => {
-            /* console.log(result)
+      connection.query(
+        'select * from main_product join size_typeproduct on main_product.id_product = size_typeproduct.id_sizeproduct where main_product.status_product = "ON" && size_typeproduct.type = "Product"',
+        (err, result) => {
+          !err ? resolve(result) : reject(new Error(err))
+        }
+      )
+    })
+  },
+  /* Get Promo */
+  getPromoProductModel: () => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'select * from coupon_product join size_typeproduct on coupon_product.id_coupon = size_typeproduct.id_sizeproduct where coupon_product.status_promo = "ON" && size_typeproduct.type = "Promo"',
+        (err, result) => {
+          !err ? resolve(result) : reject(new Error(err))
+        }
+      )
+    })
+  },
+  getProductLimitModel: (limit, offset) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'select * from main_product join size_typeproduct on main_product.id_product = size_typeproduct.id_sizeproduct where main_product.status_product = "ON" && size_typeproduct.type = "Product" LIMIT ? OFFSET ?',
+        [limit, offset],
+        (err, result) => {
+          /* console.log(result)
         console.log(err) */
-            !err ? resolve(result) : reject(new Error(err))
-          }
-        )
-      } else if (search) {
-        connection.query(
-          `SELECT * FROM main_product JOIN category_product ON main_product.category_id = category_product.id_category WHERE main_product.status_product = "ON" && main_product.name_product LIKE "%${search}%" limit ? offset ?`,
-          [limit, offset],
-          (err, result) => {
-            /* console.log(result)
+          !err ? resolve(result) : reject(new Error(err))
+        }
+      )
+    })
+  },
+  getProductSort: (sort) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        `select * from main_product order by price_product ${sort}`,
+        (err, result) => {
+          !err ? resolve(result) : reject(new Error(err))
+        }
+      )
+    })
+  },
+  searchingProduct: (search) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        `SELECT * FROM main_product WHERE main_product.status_product = "ON" && main_product.name_product LIKE "%${search}%"`,
+        (err, result) => {
+          /* console.log(result)
             console.log(err) */
-            !err ? resolve(result) : reject(new Error(err))
-          }
-        )
-      } else {
-        connection.query(
-          'SELECT * FROM main_product JOIN category_product ON main_product.category_id = category_product.id_category WHERE main_product.status_product = "ON" LIMIT ? OFFSET ?',
-          [limit, offset],
-          (err, result) => {
-            /* console.log(result)
-        console.log(err) */
-            !err ? resolve(result) : reject(new Error(err))
-          }
-        )
-      }
+          !err ? resolve(result) : reject(new Error(err))
+        }
+      )
     })
   },
   /* Add Product */
@@ -158,32 +179,24 @@ module.exports = {
       )
     })
   },
-  getProductCount: (category, search) => {
+  getProductCount: () => {
     return new Promise((resolve, reject) => {
-      /* Count Catagory */
-      if (category) {
-        connection.query(
-          'select count(*) as total from main_product where status_product = "ON" && category_id = ?',
-          category,
-          (err, result) => {
-            !err ? resolve(result[0].total) : reject(new Error(err))
-          }
-        )
-      } else if (search) {
-        connection.query(
-          `select count(*) as total from main_product where status_product = "ON" && main_product.name_product LIKE "%${search}%"`,
-          (err, result) => {
-            !err ? resolve(result[0].total) : reject(new Error(err))
-          }
-        )
-      } else {
-        connection.query(
-          'select count(*) as total from main_product where status_product = "ON"',
-          (err, result) => {
-            !err ? resolve(result[0].total) : reject(new Error(err))
-          }
-        )
-      }
+      connection.query(
+        'select count(*) as total from main_product where status_product = "ON"',
+        (err, result) => {
+          !err ? resolve(result[0].total) : reject(new Error(err))
+        }
+      )
     })
   }
+  /*   getProductSearchCount: (search) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        `select count(*) as total from main_product where status_product = "ON" && main_product.name_product LIKE "%${search}%"`,
+        (err, result) => {
+          !err ? resolve(result[0].total) : reject(new Error(err))
+        }
+      )
+    })
+  } */
 }
