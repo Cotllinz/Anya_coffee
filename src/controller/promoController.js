@@ -6,9 +6,14 @@ const {
   updatePromoModal,
   updateSizePromoModel,
   deletePromoModel,
-  deleteSizePromoModel
+  deleteSizePromoModel,
+  getPromoCount,
+  getPromoLimitModel,
+  getPromoBySearch,
+  getPromoSort
 } = require('../model/promoModel')
 const helper = require('../helper/response')
+const qs = require('querystring')
 
 module.exports = {
   getAllPromo: async (req, res) => {
@@ -30,6 +35,66 @@ module.exports = {
       }
     } catch (err) {
       return helper.response(res, 400, 'Bad Request', err)
+    }
+  },
+  getPromoLimit: async (req, res) => {
+    try {
+      let { page, limit } = req.query
+      page = parseInt(page)
+      limit = parseInt(limit)
+      const totalProduct = await getPromoCount()
+      const totalPage = Math.ceil(totalProduct / limit)
+      const offset = page * limit - limit
+      const prevLink =
+        page > 1 ? qs.stringify({ ...req.query, ...{ page: page - 1 } }) : null
+      const nextLink =
+        page < totalPage
+          ? qs.stringify({ ...req.query, ...{ page: page + 1 } })
+          : null
+      /* ======================================= */
+
+      const newPage = {
+        page,
+        limit,
+        totalPage,
+        totalProduct,
+        nextLink: nextLink && `http://localhost:3000/promo/limit?${nextLink}`,
+        prevLink: prevLink && `http://localhost:3000/promo/limit?${prevLink}`
+      }
+      const resultProduct = await getPromoLimitModel(limit, offset)
+      return helper.response(
+        res,
+        200,
+        'Succes GET Promo By Limit',
+        resultProduct,
+        newPage
+      )
+    } catch (err) {
+      return helper.response(res, 400, 'Bad Request', err)
+    }
+  },
+  getSortingAscPromo: async (req, res) => {
+    try {
+      const { sort } = req.query
+      console.log(sort)
+      const result = await getPromoSort(sort)
+      return helper.response(res, 200, 'Success Sort and GET Promo', result)
+    } catch (err) {
+      return helper.response(res, 400, 'Invalid GET Sort Promo', err)
+    }
+  },
+  searchPromo: async (req, res) => {
+    try {
+      const { search } = req.query
+      const resultSearchPromo = await getPromoBySearch(search)
+      return helper.response(
+        res,
+        200,
+        'Success GET Promo Product',
+        resultSearchPromo
+      )
+    } catch (err) {
+      return helper.response(res, 400, 'Invalid Search Promo', err)
     }
   },
   AddPromo: async (req, res) => {

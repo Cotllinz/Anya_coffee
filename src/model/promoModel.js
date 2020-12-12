@@ -3,9 +3,12 @@ const connection = require('../config/mysql')
 module.exports = {
   getAllPromoModal: () => {
     return new Promise((resolve, reject) => {
-      connection.query('select * from coupon_product', (err, result) => {
-        !err ? resolve(result) : reject(new Error(err))
-      })
+      connection.query(
+        'select * from coupon_product join size_typeproduct on coupon_product.id_coupon = size_typeproduct.id_sizeProduct where size_typeproduct.type ="Promo" && coupon_product.status_promo ="ON" order by id_coupon ASC',
+        (err, result) => {
+          !err ? resolve(result) : reject(new Error(err))
+        }
+      )
     })
   },
   getPromoByIdModal: (id) => {
@@ -13,6 +16,37 @@ module.exports = {
       connection.query(
         'select * from coupon_product where id_coupon = ?',
         id,
+        (err, result) => {
+          !err ? resolve(result) : reject(new Error(err))
+        }
+      )
+    })
+  },
+  getPromoLimitModel: (limit, offset) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'select * from coupon_product join size_typeproduct on coupon_product.id_coupon = size_typeproduct.id_sizeproduct where coupon_product.status_promo = "ON" && size_typeproduct.type = "Promo" LIMIT ? OFFSET ?',
+        [limit, offset],
+        (err, result) => {
+          !err ? resolve(result) : reject(new Error(err))
+        }
+      )
+    })
+  },
+  getPromoBySearch: (search) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        `SELECT * FROM coupon_product WHERE coupon_product.status_promo = "ON" && coupon_product.name_productPromo LIKE "%${search}%"`,
+        (err, result) => {
+          !err ? resolve(result) : reject(new Error(err))
+        }
+      )
+    })
+  },
+  getPromoSort: (sort) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        `select * from coupon_product order by normal_price * (discount_coupon/100) ${sort}`,
         (err, result) => {
           !err ? resolve(result) : reject(new Error(err))
         }
@@ -104,6 +138,16 @@ module.exports = {
             ...data
           }
           !err ? resolve(newResult) : reject(new Error(err))
+        }
+      )
+    })
+  },
+  getPromoCount: () => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'select count(*) as total from coupon_product where status_promo = "ON"',
+        (err, result) => {
+          !err ? resolve(result[0].total) : reject(new Error(err))
         }
       )
     })
