@@ -67,7 +67,6 @@ module.exports = {
         descProduct,
         qtyProduct,
         categoryId,
-        promoId,
         statusProduct,
         sizeL,
         sizeR,
@@ -95,20 +94,20 @@ module.exports = {
               desc_product: descProduct,
               qty_product: qtyProduct,
               category_id: categoryId,
-              promo_id: promoId,
               status_product: statusProduct || 'ON',
               create_at: new Date()
             }
 
             const resultAddData = await AddProductModel(addData)
             const AddSize = {
-              size_id: resultAddData.id_product,
+              id_sizeProduct: resultAddData.id_product,
               size_L: sizeL || 'OFF',
               size_R: sizeR || 'OFF',
               size_XL: sizeXL || 'OFF',
               size_200: size200 || 'OFF',
               size_350: size350 || 'OFF',
               size_400: size400 || 'OFF',
+              type: 'Product',
               status_product: resultAddData.status_product
             }
             await AddSizeidModel(AddSize)
@@ -165,7 +164,6 @@ module.exports = {
         descProduct,
         qtyProduct,
         categoryId,
-        promoId,
         statusProduct,
         sizeL,
         sizeR,
@@ -192,7 +190,6 @@ module.exports = {
               desc_product: descProduct,
               qty_product: qtyProduct,
               category_id: categoryId,
-              promo_id: promoId,
               status_product: statusProduct || 'ON',
               update_at: new Date()
             }
