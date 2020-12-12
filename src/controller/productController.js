@@ -1,5 +1,6 @@
 const {
   getProductModel,
+  getPromoProductModel,
   AddProductModel,
   AddSizeidModel,
   getProductbyId,
@@ -7,21 +8,39 @@ const {
   UpdateProductSizeModel,
   deleteProductModel,
   deleteSizeProductModel,
-  getProductCount
+  getProductCount,
+  getProductLimitModel,
+  getProductSort,
+  /* getProductSearchCount, */
+  searchingProduct
 } = require('../model/productModel')
 const helper = require('../helper/response')
 const qs = require('querystring')
 module.exports = {
-  getProduct: async (req, res) => {
+  getProductandPromoProduct: async (req, res) => {
     try {
-      /* Paging Main Product and Sorting Product By Category */
-      let { page, limit, category, search } = req.query
-      /* Get Size Product Belum */
-      const getPage = search ? (page = 1) : page
-      page = parseInt(getPage)
+      const result = await getProductModel()
+      const resultPromo = await getPromoProductModel()
+      const newResult = {
+        result,
+        resultPromo
+      }
+      return helper.response(
+        res,
+        200,
+        'Succes GET Product and Promo',
+        newResult
+      )
+    } catch (err) {
+      return helper.response(res, 400, 'Invalid GET Product and Promo', err)
+    }
+  },
+  Productlimit: async (req, res) => {
+    try {
+      let { page, limit } = req.query
+      page = parseInt(page)
       limit = parseInt(limit)
-      category = parseInt(category)
-      const totalProduct = await getProductCount(category, search)
+      const totalProduct = await getProductCount()
       const totalPage = Math.ceil(totalProduct / limit)
       const offset = page * limit - limit
       const prevLink =
@@ -30,23 +49,15 @@ module.exports = {
         page < totalPage
           ? qs.stringify({ ...req.query, ...{ page: page + 1 } })
           : null
-      /* ======================================= */
-
       const newPage = {
         page,
         limit,
         totalPage,
-        category,
         totalProduct,
-        nextLink: nextLink && `http://localhost:3000/product?${nextLink}`,
-        prevLink: prevLink && `http://localhost:3000/product?${prevLink}`
+        nextLink: nextLink && `http://localhost:3000/product/limit?${nextLink}`,
+        prevLink: prevLink && `http://localhost:3000/product/limit?${prevLink}`
       }
-      const resultProduct = await getProductModel(
-        category,
-        limit,
-        offset,
-        search
-      )
+      const resultProduct = await getProductLimitModel(limit, offset)
       return helper.response(
         res,
         200,
@@ -56,6 +67,30 @@ module.exports = {
       )
     } catch (err) {
       return helper.response(res, 400, 'Invalid GET Product', err)
+    }
+  },
+  getSortingAscProduct: async (req, res) => {
+    try {
+      const { sort } = req.query
+      console.log(sort)
+      const result = await getProductSort(sort)
+      return helper.response(res, 200, 'Success Sort and GET Product', result)
+    } catch (err) {
+      return helper.response(res, 400, 'Invalid GET Sort Product', err)
+    }
+  },
+  searchProduct: async (req, res) => {
+    try {
+      const { search } = req.query
+      const resultSearchProduct = await searchingProduct(search)
+      return helper.response(
+        res,
+        200,
+        'Success GET Product',
+        resultSearchProduct
+      )
+    } catch (err) {
+      return helper.response(res, 400, 'Invalid GET Search Product', err)
     }
   },
   AddProduct: async (req, res) => {
