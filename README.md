@@ -30,7 +30,13 @@
 Open .env file on your favorite code editor, and copy paste this code below :
 
 ```
-DB_HOST=localhost // Database host
+DB_HOST=127.0.0.1 // Database host
+DB_USER=root // Database username
+DB_PASS=  // Database Password
+DB_DATABASE=anya_coffee // Database name
+DB_ZONE=UTC // Database Time Zone
+PORT=3000 // My Using PORT
+ 
 ```
 
 ## License
