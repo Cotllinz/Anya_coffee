@@ -23,7 +23,7 @@
 5. Create a database with the name #nama_database, and Import file sql to **phpmyadmin**
 6. Open Postman desktop application or Chrome web app extension that has installed before
 7. Choose HTTP Method and enter request url.(ex. localhost:3000/)
-8. You can see all the end point [here](https://documenter.getpostman.com/view/9852901/TVmS8Fce)
+8. You can see all the end point [here](https://documenter.getpostman.com/view/8217070/TVsoGAVc)
 
 ## Set up .env file
 
