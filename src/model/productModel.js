@@ -97,7 +97,7 @@ module.exports = {
   getProductbyId: (id) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        'select * from main_product where id_product = ?',
+        'select * from main_product join size_typeproduct on main_product.id_product = size_typeproduct.id_sizeproduct where id_product = ?',
         id,
         (err, result) => {
           /*  console.log(result)
