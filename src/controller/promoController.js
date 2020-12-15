@@ -106,8 +106,8 @@ module.exports = {
         codeCoupon,
         discountPromo,
         idCategory,
-        /*    startExp,
-        endExp, */
+        /* startExp, */
+        endExp,
         statusPromo,
         sizeL,
         sizeR,
@@ -124,10 +124,8 @@ module.exports = {
         descPromo &&
         codeCoupon &&
         discountPromo &&
-        idCategory
-        /*  &&
-        startExp &&
-        endExp */
+        idCategory &&
+        endExp
       ) {
         if (NewSize.length >= 2) {
           if (idCategory > 0 && idCategory <= 5) {
@@ -139,7 +137,7 @@ module.exports = {
               discount_coupon: discountPromo,
               id_categoryPromo: idCategory,
               start_expired: new Date(),
-              end_expired: new Date(),
+              end_expired: endExp,
               status_promo: statusPromo || 'ON',
               create_at: new Date()
             }
@@ -198,8 +196,8 @@ module.exports = {
         codeCoupon,
         discountPromo,
         idCategory,
-        /*    startExp,
-        endExp, */
+        /* /*    startExp, */
+        endExp,
         statusPromo,
         sizeL,
         sizeR,
@@ -215,10 +213,8 @@ module.exports = {
           descPromo &&
           codeCoupon &&
           discountPromo &&
-          idCategory
-          /*  &&
-        startExp &&
-        endExp */
+          idCategory &&
+          endExp
         ) {
           if (idCategory > 0 && idCategory <= 5) {
             const updatePromo = {
@@ -229,7 +225,7 @@ module.exports = {
               discount_coupon: discountPromo,
               id_categoryPromo: idCategory,
               start_expired: new Date(),
-              end_expired: new Date(),
+              end_expired: endExp,
               status_promo: statusPromo || 'ON',
               update_at: new Date()
             }

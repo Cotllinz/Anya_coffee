@@ -4,7 +4,7 @@ module.exports = {
   getAllPromoModal: () => {
     return new Promise((resolve, reject) => {
       connection.query(
-        'select * from coupon_product join size_typeproduct on coupon_product.id_coupon = size_typeproduct.id_sizeProduct where size_typeproduct.type ="Promo" && coupon_product.status_promo ="ON" order by id_coupon ASC',
+        'select * from coupon_product join size_typeproduct on coupon_product.id_coupon = size_typeproduct.id_sizeProduct where size_typeproduct.type ="Promo" && coupon_product.status_promo ="ON" && start_expired < end_expired order by id_coupon ASC',
         (err, result) => {
           !err ? resolve(result) : reject(new Error(err))
         }
