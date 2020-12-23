@@ -1,6 +1,6 @@
 <h1 align="center">ExpressJS - Anya Coffee RESTfull API</h1>
 
-![alt text](https://raw.githubusercontent.com/Cotllinz/Arkademy/main/Arkademy_Pretest/assets/image/SS%20Arka.png)
+![alt text](https://github.com/Cotllinz/Anya_coffee/blob/main/Background_application/View%20Application.PNG)
 [More about Express](https://en.wikipedia.org/wiki/Express.js)
 
 ## Built With
