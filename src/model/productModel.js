@@ -16,7 +16,7 @@ module.exports = {
   getPromoProductModel: () => {
     return new Promise((resolve, reject) => {
       connection.query(
-        'select * from coupon_product join size_typeproduct on coupon_product.id_coupon = size_typeproduct.id_sizeproduct where coupon_product.status_promo = "ON" && size_typeproduct.type = "Promo"',
+        'select * from main_product join size_typeproduct on main_product.id_product = size_typeproduct.id_sizeproduct join coupon_product on coupon_product.code_coupon = main_product.code_discount where main_product.status_product = "ON" && size_typeproduct.type = "Product"',
         (err, result) => {
           !err ? resolve(result) : reject(new Error(err))
         }
@@ -65,7 +65,7 @@ module.exports = {
         'insert into main_product set ?',
         data,
         (err, result) => {
-          /*  console.log(result)
+          /*   console.log(result)
           console.log(err) */
           const NewResult = {
             id_product: result.insertId,

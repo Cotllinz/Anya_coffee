@@ -13,16 +13,5 @@ module.exports = {
         }
       )
     })
-  },
-  getPromocategory: (category) => {
-    return new Promise((resolve, reject) => {
-      connection.query(
-        'select * from coupon_product join category_product on id_categoryPromo = id_category where id_categoryPromo = ? && status_promo = "ON"',
-        category,
-        (err, result) => {
-          !err ? resolve(result) : reject(new Error(err))
-        }
-      )
-    })
   }
 }

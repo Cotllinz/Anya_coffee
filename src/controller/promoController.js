@@ -100,13 +100,11 @@ module.exports = {
   AddPromo: async (req, res) => {
     try {
       const {
-        namePromo,
-        normalPrice,
-        descPromo,
         codeCoupon,
+        minPurchase,
+        productId,
         discountPromo,
-        idCategory,
-        /* startExp, */
+        startExp,
         endExp,
         statusPromo,
         sizeL,
@@ -119,54 +117,43 @@ module.exports = {
       const size = [sizeL, sizeR, sizeXL, size200, size350, size400]
       const NewSize = size.filter((e) => e === 'ON')
       if (
-        namePromo &&
-        normalPrice &&
-        descPromo &&
+        minPurchase &&
         codeCoupon &&
+        productId &&
         discountPromo &&
-        idCategory &&
-        endExp
+        endExp &&
+        startExp
       ) {
-        if (NewSize.length >= 2) {
-          if (idCategory > 0 && idCategory <= 5) {
-            const addPromo = {
-              name_productPromo: namePromo,
-              normal_price: normalPrice,
-              desc_coupon: descPromo,
-              code_coupon: codeCoupon,
-              discount_coupon: discountPromo,
-              id_categoryPromo: idCategory,
-              start_expired: new Date(),
-              end_expired: endExp,
-              status_promo: statusPromo || 'ON',
-              create_at: new Date()
-            }
-            const resultAddPromo = await addPromoModal(addPromo)
-            const sizePromo = {
-              id_sizeProduct: resultAddPromo.id_coupon,
-              size_L: sizeL || 'OFF',
-              size_R: sizeR || 'OFF',
-              size_XL: sizeXL || 'OFF',
-              size_200: size200 || 'OFF',
-              size_350: size350 || 'OFF',
-              size_400: size400 || 'OFF',
-              type: 'Promo',
-              status_product: resultAddPromo.status_promo
-            }
-            await addSizePromoModal(sizePromo)
-            return helper.response(
-              res,
-              200,
-              'Succes Add Promo Product',
-              resultAddPromo
-            )
-          } else {
-            return helper.response(
-              res,
-              404,
-              'Category cant be below 0 or above 5!! check again'
-            )
+        if (NewSize.length >= 1) {
+          const addPromo = {
+            min_purchase: minPurchase,
+            code_coupon: codeCoupon,
+            product_id: productId,
+            discount_coupon: discountPromo,
+            start_expired: startExp,
+            end_expired: endExp,
+            status_promo: statusPromo || 'ON',
+            create_at: new Date()
           }
+          const resultAddPromo = await addPromoModal(addPromo)
+          const sizePromo = {
+            id_sizeProduct: resultAddPromo.id_coupon,
+            size_L: sizeL || 'OFF',
+            size_R: sizeR || 'OFF',
+            size_XL: sizeXL || 'OFF',
+            size_200: size200 || 'OFF',
+            size_350: size350 || 'OFF',
+            size_400: size400 || 'OFF',
+            type: 'Promo',
+            status_product: resultAddPromo.status_promo
+          }
+          await addSizePromoModal(sizePromo)
+          return helper.response(
+            res,
+            200,
+            'Succes Add Promo Product',
+            resultAddPromo
+          )
         } else {
           return helper.response(
             res,
@@ -193,6 +180,7 @@ module.exports = {
         namePromo,
         normalPrice,
         descPromo,
+        productId,
         codeCoupon,
         discountPromo,
         idCategory,
@@ -211,6 +199,7 @@ module.exports = {
           namePromo &&
           normalPrice &&
           descPromo &&
+          productId &&
           codeCoupon &&
           discountPromo &&
           idCategory &&
@@ -222,6 +211,7 @@ module.exports = {
               normal_price: normalPrice,
               desc_coupon: descPromo,
               code_coupon: codeCoupon,
+              product_id: productId,
               discount_coupon: discountPromo,
               id_categoryPromo: idCategory,
               start_expired: new Date(),
