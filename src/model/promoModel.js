@@ -4,7 +4,7 @@ module.exports = {
   getAllPromoModal: () => {
     return new Promise((resolve, reject) => {
       connection.query(
-        'select * from coupon_product join size_typeproduct on coupon_product.id_coupon = size_typeproduct.id_sizeProduct where size_typeproduct.type ="Promo" && coupon_product.status_promo ="ON" order by id_coupon ASC',
+        'select * from coupon_product join size_typeproduct on coupon_product.id_coupon = size_typeproduct.id_sizeProduct join main_product on id_product = product_id where size_typeproduct.type ="Promo" && coupon_product.status_promo ="ON" && start_expired < end_expired order by id_coupon ASC',
         (err, result) => {
           !err ? resolve(result) : reject(new Error(err))
         }
@@ -25,7 +25,7 @@ module.exports = {
   getPromoLimitModel: (limit, offset) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        'select * from coupon_product join size_typeproduct on coupon_product.id_coupon = size_typeproduct.id_sizeproduct where coupon_product.status_promo = "ON" && size_typeproduct.type = "Promo" LIMIT ? OFFSET ?',
+        'select * from coupon_product join size_typeproduct on coupon_product.id_coupon = size_typeproduct.id_sizeproduct join main_product on id_product = product_id where coupon_product.status_promo = "ON" && size_typeproduct.type = "Promo" && start_expired < end_expired order by id_coupon ASC LIMIT ? OFFSET ?',
         [limit, offset],
         (err, result) => {
           !err ? resolve(result) : reject(new Error(err))
@@ -59,6 +59,8 @@ module.exports = {
         'insert into coupon_product set ?',
         data,
         (err, result) => {
+          /*  console.log(result)
+          console.log(err) */
           const newResult = {
             id_coupon: result.insertId,
             ...data
@@ -145,7 +147,7 @@ module.exports = {
   getPromoCount: () => {
     return new Promise((resolve, reject) => {
       connection.query(
-        'select count(*) as total from coupon_product where status_promo = "ON"',
+        'select count(*) as total from coupon_product where status_promo = "ON" && start_expired < end_expired',
         (err, result) => {
           !err ? resolve(result[0].total) : reject(new Error(err))
         }

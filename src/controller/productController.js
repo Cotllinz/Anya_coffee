@@ -20,19 +20,17 @@ module.exports = {
   getProductandPromoProduct: async (req, res) => {
     try {
       const result = await getProductModel()
-      const resultPromo = await getPromoProductModel()
-      const newResult = {
-        result,
-        resultPromo
-      }
-      return helper.response(
-        res,
-        200,
-        'Succes GET Product and Promo',
-        newResult
-      )
+      return helper.response(res, 200, 'Succes GET Product', result)
     } catch (err) {
       return helper.response(res, 400, 'Invalid GET Product and Promo', err)
+    }
+  },
+  getProductPromoProduct: async (req, res) => {
+    try {
+      const result = await getPromoProductModel()
+      return helper.response(res, 200, 'Succes Claim Promo Product', result)
+    } catch (err) {
+      return helper.response(res, 400, 'Invalid Claim Promo Product', err)
     }
   },
   Productlimit: async (req, res) => {
@@ -101,7 +99,13 @@ module.exports = {
         priceProduct,
         descProduct,
         qtyProduct,
+        codeDiscount,
         categoryId,
+        timestart,
+        timeend,
+        homeDeliv,
+        dineIn,
+        takeaway,
         statusProduct,
         sizeL,
         sizeR,
@@ -114,56 +118,51 @@ module.exports = {
       const NewSize = size.filter((e) => e === 'ON')
       if (
         nameProduct &&
-        imageProduct &&
+        /* imageProduct && */
         priceProduct &&
+        timestart &&
+        timeend &&
         descProduct &&
         qtyProduct &&
         categoryId
       ) {
-        if (NewSize.length >= 2) {
-          if (categoryId > 0 && categoryId <= 5) {
-            const addData = {
-              name_product: nameProduct,
-              image_product: imageProduct,
-              price_product: priceProduct,
-              desc_product: descProduct,
-              qty_product: qtyProduct,
-              category_id: categoryId,
-              status_product: statusProduct || 'ON',
-              create_at: new Date()
-            }
-
-            const resultAddData = await AddProductModel(addData)
-            const AddSize = {
-              id_sizeProduct: resultAddData.id_product,
-              size_L: sizeL || 'OFF',
-              size_R: sizeR || 'OFF',
-              size_XL: sizeXL || 'OFF',
-              size_200: size200 || 'OFF',
-              size_350: size350 || 'OFF',
-              size_400: size400 || 'OFF',
-              type: 'Product',
-              status_product: resultAddData.status_product
-            }
-            await AddSizeidModel(AddSize)
-            return helper.response(
-              res,
-              200,
-              'Succes Add Product',
-              resultAddData
-            )
-          } else {
-            return helper.response(
-              res,
-              404,
-              'Category cant be below 0 or above 5!! check again'
-            )
+        if (NewSize.length >= 1 && NewSize.length <= 3) {
+          const addData = {
+            name_product: nameProduct,
+            image_product: imageProduct,
+            price_product: priceProduct,
+            desc_product: descProduct,
+            qty_product: qtyProduct,
+            category_id: categoryId,
+            time_start: timestart,
+            time_end: timeend,
+            homeDeliv: homeDeliv || 'OFF',
+            dineIn: dineIn || 'OFF',
+            takeaway: takeaway || 'OFF',
+            code_discount: codeDiscount || '',
+            status_product: statusProduct || 'ON',
+            create_at: new Date()
           }
+
+          const resultAddData = await AddProductModel(addData)
+          const AddSize = {
+            id_sizeProduct: resultAddData.id_product,
+            size_L: sizeL || 'OFF',
+            size_R: sizeR || 'OFF',
+            size_XL: sizeXL || 'OFF',
+            size_200: size200 || 'OFF',
+            size_350: size350 || 'OFF',
+            size_400: size400 || 'OFF',
+            type: 'Product',
+            status_product: resultAddData.status_product
+          }
+          await AddSizeidModel(AddSize)
+          return helper.response(res, 200, 'Succes Add Product', resultAddData)
         } else {
           return helper.response(
             res,
             404,
-            'Can You Input Size Minimum 2 Size Please'
+            'Can You Input Size Minimum 1 Size Please And Max 3 Size'
           )
         }
       } else {
@@ -200,6 +199,7 @@ module.exports = {
         qtyProduct,
         categoryId,
         statusProduct,
+        codeDiscount,
         sizeL,
         sizeR,
         sizeXL,
@@ -211,7 +211,7 @@ module.exports = {
       if (checkId.length > 0) {
         if (
           nameProduct &&
-          imageProduct &&
+          /*    imageProduct && */
           priceProduct &&
           descProduct &&
           qtyProduct &&
@@ -225,6 +225,7 @@ module.exports = {
               desc_product: descProduct,
               qty_product: qtyProduct,
               category_id: categoryId,
+              code_discount: codeDiscount,
               status_product: statusProduct || 'ON',
               update_at: new Date()
             }

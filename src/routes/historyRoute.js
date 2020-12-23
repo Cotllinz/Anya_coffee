@@ -7,10 +7,14 @@ const {
   deleteHistory,
   searchHistory
 } = require('../controller/historyController')
-route.get('/', getHistory)
-route.get('/search', searchHistory)
-route.get('/:id', getbyid)
-route.post('/', addHistory)
-route.post('/details', addDetails)
-route.patch('/:id', deleteHistory)
+const {
+  auth,
+  authIsAdminorUser
+} = require('../middleware/authentication')
+route.get('/', auth, authIsAdminorUser, getHistory)
+route.get('/search', auth, authIsAdminorUser, searchHistory)
+route.get('/:id', auth, authIsAdminorUser, getbyid)
+route.post('/', auth, authIsAdminorUser, addHistory)
+route.post('/details', auth, authIsAdminorUser, addDetails)
+route.patch('/:id', auth, authIsAdminorUser, deleteHistory)
 module.exports = route

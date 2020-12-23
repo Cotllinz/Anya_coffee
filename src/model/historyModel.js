@@ -32,6 +32,8 @@ module.exports = {
             id_history: result.insertId,
             ...data
           }
+          /* console.log(newResult)
+          console.log(err) */
           !err ? resolve(newResult) : reject(new Error(err))
         }
       )
@@ -47,6 +49,8 @@ module.exports = {
             id_detail: result.insertId,
             ...data
           }
+          /*  console.log(newResult)
+          console.log(err) */
           !err ? resolve(newResult) : reject(new Error(err))
         }
       )
