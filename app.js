@@ -6,12 +6,12 @@ const cors = require('cors')
 require('dotenv').config()
 const app = express()
 app.use(smash('dev'))
+app.use(express.static('userImage'))
 app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 const port = process.env.PORT
 app.use('/', routeNavigation)
-
 app.use((request, response, next) => {
   response.header('Access-Control-Allow-Origin', '*')
   response.header(
