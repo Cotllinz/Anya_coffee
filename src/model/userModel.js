@@ -38,5 +38,33 @@ module.exports = {
         }
       )
     })
+  },
+  updateUserModel: (data, email) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'update user set ? where email_user = ?',
+        [data, email],
+        (err, result) => {
+          /*   console.log(err)
+          console.log(result) */
+          const newResult = {
+            email_user: email,
+            ...data
+          }
+          !err ? resolve(newResult) : reject(new Error(err))
+        }
+      )
+    })
+  },
+  deleteUserModel: (email) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'delete from user where email_user = ?',
+        email,
+        (err, result) => {
+          !err ? resolve(result) : reject(new Error(err))
+        }
+      )
+    })
   }
 }
