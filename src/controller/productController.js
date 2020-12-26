@@ -17,10 +17,13 @@ const {
 const helper = require('../helper/response')
 const qs = require('querystring')
 const fs = require('fs')
+const redis = require('redis')
+const client = redis.createClient()
 module.exports = {
   getProductandPromoProduct: async (req, res) => {
     try {
       const result = await getProductModel()
+      client.setex('getProduct', 3600, JSON.stringify(result))
       return helper.response(res, 200, 'Succes GET Product', result)
     } catch (err) {
       return helper.response(res, 400, 'Invalid GET Product and Promo', err)
@@ -29,6 +32,7 @@ module.exports = {
   getProductPromoProduct: async (req, res) => {
     try {
       const result = await getPromoProductModel()
+      client.setex('getProductPromo', 3600, JSON.stringify(result))
       return helper.response(res, 200, 'Succes Claim Promo Product', result)
     } catch (err) {
       return helper.response(res, 400, 'Invalid Claim Promo Product', err)
@@ -56,7 +60,18 @@ module.exports = {
         nextLink: nextLink && `http://localhost:3000/product/limit?${nextLink}`,
         prevLink: prevLink && `http://localhost:3000/product/limit?${prevLink}`
       }
+
       const resultProduct = await getProductLimitModel(limit, offset)
+      const newData = {
+        resultProduct,
+        newPage
+      }
+      client.setex(
+        `getProduct:${JSON.stringify(req.query)}`,
+        3600,
+        JSON.stringify(newData)
+      )
+
       return helper.response(
         res,
         200,
@@ -195,9 +210,17 @@ module.exports = {
     try {
       const { id } = req.params
       const result = await getProductbyId(id)
-      return result.length > 0
-        ? helper.response(res, 200, 'Success Get Product by id', result)
-        : helper.response(res, 404, `Product By Id : ${id} Not found`)
+      if (result.length > 0) {
+        client.setex(`getProductById:${id}`, 3600, JSON.stringify(result))
+        return helper.response(
+          res,
+          200,
+          `Success Get Product by id ${id}`,
+          result
+        )
+      } else {
+        return helper.response(res, 404, `Product By Id : ${id} Not found`)
+      }
     } catch (err) {
       return helper.response(res, 400, 'Invalid Get Product', err)
     }

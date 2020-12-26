@@ -14,11 +14,14 @@ const {
 } = require('../model/promoModel')
 const helper = require('../helper/response')
 const qs = require('querystring')
+const redis = require('redis')
+const client = redis.createClient()
 
 module.exports = {
   getAllPromo: async (req, res) => {
     try {
       const result = await getAllPromoModal()
+      client.setex('getPromo', 3600, JSON.stringify(result))
       return helper.response(res, 200, 'Success Get Promo Product', result)
     } catch (err) {
       return helper.response(res, 400, 'Invalid Get Promo Product', err)
@@ -29,6 +32,7 @@ module.exports = {
       const { id } = req.params
       const result = await getPromoByIdModal(id)
       if (result.length > 0) {
+        client.setex(`getPromoById:${id}`, 3600, JSON.stringify(result))
         return helper.response(res, 200, `Success Get Promo Id ${id}`, result)
       } else {
         return helper.response(res, 404, `Invalid Get Promo Id ${id}`)
@@ -61,12 +65,22 @@ module.exports = {
         nextLink: nextLink && `http://localhost:3000/promo/limit?${nextLink}`,
         prevLink: prevLink && `http://localhost:3000/promo/limit?${prevLink}`
       }
-      const resultProduct = await getPromoLimitModel(limit, offset)
+      const resultPromo = await getPromoLimitModel(limit, offset)
+      const newData = {
+        resultPromo,
+        newPage
+      }
+      client.setex(
+        `getPromo:${JSON.stringify(req.query)}`,
+        3600,
+        JSON.stringify(newData)
+      )
+
       return helper.response(
         res,
         200,
-        'Succes GET Promo By Limit',
-        resultProduct,
+        'Success Get Promo',
+        resultPromo,
         newPage
       )
     } catch (err) {
@@ -177,14 +191,11 @@ module.exports = {
       const { id } = req.params
       const checkId = await getPromoByIdModal(id)
       const {
-        namePromo,
-        normalPrice,
-        descPromo,
-        productId,
         codeCoupon,
+        minPurchase,
+        productId,
         discountPromo,
-        idCategory,
-        /* /*    startExp, */
+        startExp,
         endExp,
         statusPromo,
         sizeL,
@@ -194,27 +205,24 @@ module.exports = {
         size350,
         size400
       } = req.body
+      const size = [sizeL, sizeR, sizeXL, size200, size350, size400]
+      const NewSize = size.filter((e) => e === 'ON')
       if (checkId.length > 0) {
         if (
-          namePromo &&
-          normalPrice &&
-          descPromo &&
-          productId &&
+          minPurchase &&
           codeCoupon &&
+          productId &&
           discountPromo &&
-          idCategory &&
-          endExp
+          endExp &&
+          startExp
         ) {
-          if (idCategory > 0 && idCategory <= 5) {
+          if (NewSize.length >= 1) {
             const updatePromo = {
-              name_productPromo: namePromo,
-              normal_price: normalPrice,
-              desc_coupon: descPromo,
+              min_purchase: minPurchase,
               code_coupon: codeCoupon,
               product_id: productId,
               discount_coupon: discountPromo,
-              id_categoryPromo: idCategory,
-              start_expired: new Date(),
+              start_expired: startExp,
               end_expired: endExp,
               status_promo: statusPromo || 'ON',
               update_at: new Date()
@@ -241,7 +249,7 @@ module.exports = {
             return helper.response(
               res,
               404,
-              'Category cant be below 0 or above 5!! check again'
+              'Can You Input Size Minimum 2 Size Please'
             )
           }
         } else {

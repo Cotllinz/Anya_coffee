@@ -16,7 +16,7 @@ module.exports = {
   getPromoProductModel: () => {
     return new Promise((resolve, reject) => {
       connection.query(
-        'select * from main_product join size_typeproduct on main_product.id_product = size_typeproduct.id_sizeproduct join coupon_product on coupon_product.code_coupon = main_product.code_discount where main_product.status_product = "ON" && size_typeproduct.type = "Product"',
+        'select * from main_product join coupon_product on coupon_product.code_coupon = main_product.code_discount join size_typeproduct on size_typeproduct.id_sizeProduct = coupon_product.id_coupon where main_product.status_product = "ON" && coupon_product.status_promo = "ON" && size_typeproduct.type = "Promo"',
         (err, result) => {
           !err ? resolve(result) : reject(new Error(err))
         }

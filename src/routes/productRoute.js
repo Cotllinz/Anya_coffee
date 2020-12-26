@@ -16,15 +16,48 @@ const {
   authIsAdminorUser
 } = require('../middleware/authentication')
 const { uploadFilterProduct } = require('../middleware/multer')
+const {
+  getProductByIdRedis,
+  clearDataProductRedis,
+  getProductRedislimit,
+  getProducthaveaPromoRedis,
+  getProductRedis
+} = require('../middleware/redisProduct')
 
-route.get('/', getProductandPromoProduct)
-route.get('/limit', Productlimit)
-route.get('/promo', auth, authIsAdminorUser, getProductPromoProduct)
-route.post('/', auth, authIsadmin, uploadFilterProduct, AddProduct)
+route.get('/', getProductRedis, getProductandPromoProduct)
+route.get('/limit', getProductRedislimit, Productlimit)
+route.get(
+  '/promo',
+  auth,
+  authIsAdminorUser,
+  getProducthaveaPromoRedis,
+  getProductPromoProduct
+)
+route.post(
+  '/',
+  auth,
+  authIsadmin,
+  clearDataProductRedis,
+  uploadFilterProduct,
+  AddProduct
+)
 route.get('/sort', getSortingAscProduct)
 route.get('/items', searchProduct)
-route.get('/:id', getProductById)
-route.patch('/:id', auth, authIsadmin, uploadFilterProduct, updateProduct)
-route.patch('/delete/:id', auth, authIsadmin, deleteProduct)
+route.get('/:id', getProductByIdRedis, getProductById)
+route.patch(
+  '/:id',
+  auth,
+  authIsadmin,
+  clearDataProductRedis,
+  uploadFilterProduct,
+  updateProduct
+)
+route.patch(
+  '/delete/:id',
+  auth,
+  authIsadmin,
+  clearDataProductRedis,
+  deleteProduct
+)
 
 module.exports = route

@@ -7,14 +7,28 @@ const {
   deleteHistory,
   searchHistory
 } = require('../controller/historyController')
+const { auth, authIsAdminorUser } = require('../middleware/authentication')
 const {
-  auth,
-  authIsAdminorUser
-} = require('../middleware/authentication')
-route.get('/', auth, authIsAdminorUser, getHistory)
+  clearDataHistoryRedis,
+  getHistoryByIdRedis,
+  getHistoryRedis
+} = require('../middleware/redisHistory')
+route.get('/', auth, authIsAdminorUser, getHistoryRedis, getHistory)
 route.get('/search', auth, authIsAdminorUser, searchHistory)
-route.get('/:id', auth, authIsAdminorUser, getbyid)
-route.post('/', auth, authIsAdminorUser, addHistory)
-route.post('/details', auth, authIsAdminorUser, addDetails)
-route.patch('/:id', auth, authIsAdminorUser, deleteHistory)
+route.get('/:id', auth, authIsAdminorUser, getHistoryByIdRedis, getbyid)
+route.post('/', auth, authIsAdminorUser, clearDataHistoryRedis, addHistory)
+route.post(
+  '/details',
+  auth,
+  authIsAdminorUser,
+  clearDataHistoryRedis,
+  addDetails
+)
+route.patch(
+  '/:id',
+  auth,
+  authIsAdminorUser,
+  clearDataHistoryRedis,
+  deleteHistory
+)
 module.exports = route
