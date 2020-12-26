@@ -51,6 +51,7 @@ module.exports = {
             email_user: email,
             ...data
           }
+          delete newResult.password
           !err ? resolve(newResult) : reject(new Error(err))
         }
       )
