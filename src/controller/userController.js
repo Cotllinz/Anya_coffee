@@ -2,6 +2,8 @@ const helper = require('../helper/response')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const fs = require('fs')
+const nodemailer = require('nodemailer')
+require('dotenv').config()
 const {
   regisUserModel,
   loginUsermodel,
@@ -33,6 +35,28 @@ module.exports = {
             create_at: new Date()
           }
           const result = await regisUserModel(setData)
+          const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+              user: process.env.user,
+              pass: process.env.pass
+            }
+          })
+          const mailOPtion = {
+            from: `${process.env.user}`,
+            to: `${userEmail}`,
+            subject: `Hello ${userName}, Anya Coffee`,
+            html: `<h2>Hello ${userName} Thanks You for Register in Anya Coffee for activation your account please login first</h2>
+                  <p>Click This Link For Activation ur account</p>
+                  <a href = "https://web.postman.co/workspace/My-Workspace~f076a5f9-603a-4078-85e0-4fa61624fab0/request/8217070-4ce9bf00-b450-4fdf-af0a-df53c301b7d3">PostMan Server</a>`
+          }
+          transporter.sendMail(mailOPtion, (err, result) => {
+            if (err) {
+              return helper.response(res, 400, 'Error Send Email', err)
+            } else {
+              console.log('Success Send Email !!!')
+            }
+          })
           return helper.response(
             res,
             200,
@@ -54,38 +78,72 @@ module.exports = {
   loginUser: async (req, res) => {
     try {
       const { userEmail, userPassword } = req.body
+      const result = await loginUsermodel(userEmail)
       const setData = {
         status: 'ON'
       }
-      await TurnOnStatus(setData, userEmail)
-      const result = await loginUsermodel(userEmail)
+      const status = await TurnOnStatus(setData, userEmail)
       if (result.length > 0) {
         const checkPassword = bcrypt.compareSync(
           userPassword,
           result[0].password
         )
         if (checkPassword) {
+          if (result[0].status === 'OFF') {
+            const transporter = nodemailer.createTransport({
+              service: 'gmail',
+              auth: {
+                user: process.env.user,
+                pass: process.env.pass
+              }
+            })
+            const mailOPtion = {
+              from: `${process.env.user}`,
+              to: `${result[0].email_user}`,
+              subject: `Thanks You ${result[0].username}, Anya Coffee`,
+              html: `<h2>Hello ${result[0].username} Thanks You for activation your account Enjoy Shopping</h2>`
+            }
+
+            transporter.sendMail(mailOPtion, (err, result) => {
+              if (err) {
+                return helper.response(res, 400, 'Error Send Email', err)
+              } else {
+                console.log('Success Send Email !!!')
+              }
+            })
+          }
           const {
             id_user: userId,
             username: userName,
             email_user: userEmail,
-            roles: role,
-            status: statusUser
+            roles: role
           } = result[0]
           const payload = {
             userId,
             userName,
             userEmail,
-            role,
-            statusUser
+            role
           }
-          const token = await jwt.sign(payload, 'SignIn', { expiresIn: '3h' })
-          const resulting = await { ...payload, token }
+          const statusUs = {
+            statusUser: status.status
+          }
+          const getAll = { ...payload, ...statusUs }
+          const token = await jwt.sign(getAll, 'SignIn', {
+            expiresIn: '3h'
+          })
+          const resulting = await { ...payload, ...statusUs, token }
+
           return helper.response(
             res,
             200,
             `Success Login username ${userName}`,
             resulting
+          )
+        } else {
+          return helper.response(
+            res,
+            404,
+            'The password you entered is incorrect !! please check again :)'
           )
         }
       } else {
@@ -122,12 +180,24 @@ module.exports = {
             updatepass = { password: ecryptPass }
           }
           let imageUser
-          if (req.file) {
+          if (req.file === undefined) {
+            imageUser = {
+              image_user: getEmail[0].image_user
+            }
+          } else if (getEmail[0].image_user === '') {
+            imageUser = {
+              image_user: req.file === undefined ? '' : req.file.filename
+            }
+          } else if (req.file.filename !== getEmail[0].image_user) {
+            fs.unlink(`./userImage/${getEmail[0].image_user}`, (err) => {
+              if (err) throw err
+              // if no error, file has been deleted successfully
+              console.log(`Success Delete Image ${getEmail[0].image_user}`)
+            })
             imageUser = {
               image_user: req.file === undefined ? '' : req.file.filename
             }
           }
-
           const updateUser = {
             username: userName,
             first_name: firstName,
@@ -141,16 +211,10 @@ module.exports = {
           }
           const fullobj = { ...updateUser, ...updatepass, ...imageUser }
           const result = await updateUserModel(fullobj, email)
-          if (imageUser) {
-            fs.unlink(`./userImage/${getEmail[0].image_user}`, (_err) => {
-              // if no error, file has been deleted successfully
-              console.log(`Success Delete Image ${getEmail[0].image_user}`)
-            })
-          }
           return helper.response(
             res,
             200,
-            `Success Login username ${userName}`,
+            `Success Update for username ${userName}`,
             result
           )
         } else {
