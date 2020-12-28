@@ -151,7 +151,7 @@ module.exports = {
           }
           const resultAddPromo = await addPromoModal(addPromo)
           const sizePromo = {
-            id_sizeProduct: resultAddPromo.id_coupon,
+            id_Product: resultAddPromo.product_id,
             size_L: sizeL || 'OFF',
             size_R: sizeR || 'OFF',
             size_XL: sizeXL || 'OFF',

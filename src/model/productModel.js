@@ -5,7 +5,7 @@ module.exports = {
   getProductModel: () => {
     return new Promise((resolve, reject) => {
       connection.query(
-        'select * from main_product join size_typeproduct on main_product.id_product = size_typeproduct.id_sizeproduct where main_product.status_product = "ON" && size_typeproduct.type = "Product"',
+        'select * from main_product join size_typeproduct on main_product.id_product = size_typeproduct.id_Product where main_product.status_product = "ON" && size_typeproduct.type = "Product"',
         (err, result) => {
           !err ? resolve(result) : reject(new Error(err))
         }
@@ -16,7 +16,7 @@ module.exports = {
   getPromoProductModel: () => {
     return new Promise((resolve, reject) => {
       connection.query(
-        'select * from main_product join coupon_product on coupon_product.code_coupon = main_product.code_discount join size_typeproduct on size_typeproduct.id_sizeProduct = coupon_product.id_coupon where main_product.status_product = "ON" && coupon_product.status_promo = "ON" && size_typeproduct.type = "Promo"',
+        'select * from main_product join coupon_product on coupon_product.code_coupon = main_product.code_discount join size_typeproduct on size_typeproduct.id_Product = coupon_product.product_id where main_product.status_product = "ON" && coupon_product.status_promo = "ON" && size_typeproduct.type = "Promo"',
         (err, result) => {
           !err ? resolve(result) : reject(new Error(err))
         }
@@ -26,7 +26,7 @@ module.exports = {
   getProductLimitModel: (limit, offset, search, sort) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        `select * from main_product join size_typeproduct on main_product.id_product = size_typeproduct.id_sizeproduct where main_product.status_product = "ON" && size_typeproduct.type = "Product" && main_product.name_product LIKE "%${search}%" ${sort} LIMIT ${limit} OFFSET ${offset}`,
+        `select * from main_product join size_typeproduct on main_product.id_product = size_typeproduct.id_Product where main_product.status_product = "ON" && size_typeproduct.type = "Product" && main_product.name_product LIKE "%${search}%" ${sort} LIMIT ${limit} OFFSET ${offset}`,
         (err, result) => {
           /*  console.log(result)
           console.log(err) */
@@ -74,7 +74,7 @@ module.exports = {
   getProductbyId: (id) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        'select * from main_product join size_typeproduct on main_product.id_product = size_typeproduct.id_sizeproduct where id_product = ?',
+        'select * from main_product join size_typeproduct on main_product.id_product = size_typeproduct.id_Product where main_product.id_product = ? && main_product.status_product = "ON" && size_typeproduct.type = "Product"',
         id,
         (err, result) => {
           /*  console.log(result)
@@ -96,7 +96,7 @@ module.exports = {
             ...data
           }
           /*   console.log(newResult)
-          console.log(err)  */
+          console.log(err) */
           !err ? resolve(newResult) : reject(new Error(err))
         }
       )
@@ -106,11 +106,11 @@ module.exports = {
   UpdateProductSizeModel: (data, id) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        'update size_typeproduct set ? where id_sizeProduct = ? && type = "Product"',
+        'update size_typeproduct set ? where id_Product = ? && type = "Product"',
         [data, id],
         (err, result) => {
           const newResult = {
-            id_sizeProduct: id,
+            id_Product: id,
             ...data
           }
           /*  console.log(newResult)
@@ -142,11 +142,11 @@ module.exports = {
   deleteSizeProductModel: (data, id) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        'update size_typeproduct set ? where id_sizeProduct = ? && type = "Product"',
+        'update size_typeproduct set ? where id_Product = ? && type = "Product"',
         [data, id],
         (err, result) => {
           const newResult = {
-            id_sizeProduct: id,
+            id_Product: id,
             ...data
           }
           /* console.log(newResult)
