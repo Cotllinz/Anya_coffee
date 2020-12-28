@@ -8,10 +8,14 @@ const {
   searchHistory
 } = require('../model/historyModel')
 const helper = require('../helper/response')
+const redis = require('redis')
+const client = redis.createClient()
+
 module.exports = {
   getHistory: async (req, res) => {
     try {
       const result = await getHistory()
+      client.setex('getHistory', 3600, JSON.stringify(result))
       return helper.response(res, 200, 'Success Get History', result)
     } catch (err) {
       return helper.response(res, 400, 'Bad Request', err)
@@ -22,6 +26,7 @@ module.exports = {
       const { id } = req.params
       const resultId = await getByIduser(id)
       if (resultId.length > 0) {
+        client.setex(`getHistoryByuserId:${id}`, 3600, JSON.stringify(resultId))
         return helper.response(
           res,
           200,

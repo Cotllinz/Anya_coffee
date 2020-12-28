@@ -10,17 +10,18 @@ const {
   deleteSizeProductModel,
   getProductCount,
   getProductLimitModel,
-  getProductSort,
-  /* getProductSearchCount, */
-  searchingProduct
+  getProductSearchCount
 } = require('../model/productModel')
 const helper = require('../helper/response')
 const qs = require('querystring')
 const fs = require('fs')
+const redis = require('redis')
+const client = redis.createClient()
 module.exports = {
   getProductandPromoProduct: async (req, res) => {
     try {
       const result = await getProductModel()
+      client.setex('getProduct', 3600, JSON.stringify(result))
       return helper.response(res, 200, 'Succes GET Product', result)
     } catch (err) {
       return helper.response(res, 400, 'Invalid GET Product and Promo', err)
@@ -29,6 +30,7 @@ module.exports = {
   getProductPromoProduct: async (req, res) => {
     try {
       const result = await getPromoProductModel()
+      client.setex('getProductPromo', 3600, JSON.stringify(result))
       return helper.response(res, 200, 'Succes Claim Promo Product', result)
     } catch (err) {
       return helper.response(res, 400, 'Invalid Claim Promo Product', err)
@@ -36,10 +38,27 @@ module.exports = {
   },
   Productlimit: async (req, res) => {
     try {
-      let { page, limit } = req.query
+      let { page, limit, search, sort } = req.query
       page = parseInt(page)
       limit = parseInt(limit)
-      const totalProduct = await getProductCount()
+      let searching
+      if (search) {
+        searching = search
+      } else {
+        searching = ''
+      }
+      let sorting
+      if (sort) {
+        sorting = sort
+      } else {
+        sorting = ''
+      }
+      let totalProduct
+      if (search) {
+        totalProduct = await getProductSearchCount(search)
+      } else {
+        totalProduct = await getProductCount()
+      }
       const totalPage = Math.ceil(totalProduct / limit)
       const offset = page * limit - limit
       const prevLink =
@@ -56,7 +75,23 @@ module.exports = {
         nextLink: nextLink && `http://localhost:3000/product/limit?${nextLink}`,
         prevLink: prevLink && `http://localhost:3000/product/limit?${prevLink}`
       }
-      const resultProduct = await getProductLimitModel(limit, offset)
+
+      const resultProduct = await getProductLimitModel(
+        limit,
+        offset,
+        searching,
+        sorting
+      )
+      const newData = {
+        resultProduct,
+        newPage
+      }
+      client.setex(
+        `getProduct:${JSON.stringify(req.query)}`,
+        3600,
+        JSON.stringify(newData)
+      )
+
       return helper.response(
         res,
         200,
@@ -68,30 +103,7 @@ module.exports = {
       return helper.response(res, 400, 'Invalid GET Product', err)
     }
   },
-  getSortingAscProduct: async (req, res) => {
-    try {
-      const { sort } = req.query
-      console.log(sort)
-      const result = await getProductSort(sort)
-      return helper.response(res, 200, 'Success Sort and GET Product', result)
-    } catch (err) {
-      return helper.response(res, 400, 'Invalid GET Sort Product', err)
-    }
-  },
-  searchProduct: async (req, res) => {
-    try {
-      const { search } = req.query
-      const resultSearchProduct = await searchingProduct(search)
-      return helper.response(
-        res,
-        200,
-        'Success GET Product',
-        resultSearchProduct
-      )
-    } catch (err) {
-      return helper.response(res, 400, 'Invalid GET Search Product', err)
-    }
-  },
+
   AddProduct: async (req, res) => {
     try {
       const {
@@ -167,6 +179,9 @@ module.exports = {
               resultAddData
             )
           } else {
+            fs.unlink(`./productImage/${req.file.filename}`, (err) => {
+              if (err) throw err
+            })
             return helper.response(
               res,
               404,
@@ -174,6 +189,9 @@ module.exports = {
             )
           }
         } else {
+          fs.unlink(`./productImage/${req.file.filename}`, (err) => {
+            if (err) throw err
+          })
           return helper.response(
             res,
             404,
@@ -181,6 +199,9 @@ module.exports = {
           )
         }
       } else {
+        fs.unlink(`./productImage/${req.file.filename}`, (err) => {
+          if (err) throw err
+        })
         return helper.response(
           res,
           404,
@@ -188,6 +209,9 @@ module.exports = {
         )
       }
     } catch (err) {
+      fs.unlink(`./productImage/${req.file.filename}`, (err) => {
+        if (err) throw err
+      })
       return helper.response(res, 400, 'Invalid Add Product', err)
     }
   },
@@ -195,9 +219,17 @@ module.exports = {
     try {
       const { id } = req.params
       const result = await getProductbyId(id)
-      return result.length > 0
-        ? helper.response(res, 200, 'Success Get Product by id', result)
-        : helper.response(res, 404, `Product By Id : ${id} Not found`)
+      if (result.length > 0) {
+        client.setex(`getProductById:${id}`, 3600, JSON.stringify(result))
+        return helper.response(
+          res,
+          200,
+          `Success Get Product by id ${id}`,
+          result
+        )
+      } else {
+        return helper.response(res, 404, `Product By Id : ${id} Not found`)
+      }
     } catch (err) {
       return helper.response(res, 400, 'Invalid Get Product', err)
     }
@@ -363,3 +395,28 @@ module.exports = {
     }
   }
 }
+
+/* getSortingAscProduct: async (req, res) => {
+    try {
+      const { sort } = req.query
+      console.log(sort)
+      const result = await getProductSort(sort)
+      return helper.response(res, 200, 'Success Sort and GET Product', result)
+    } catch (err) {
+      return helper.response(res, 400, 'Invalid GET Sort Product', err)
+    }
+  },
+  searchProduct: async (req, res) => {
+    try {
+      const { search } = req.query
+      const resultSearchProduct = await searchingProduct(search)
+      return helper.response(
+        res,
+        200,
+        'Success GET Product',
+        resultSearchProduct
+      )
+    } catch (err) {
+      return helper.response(res, 400, 'Invalid GET Search Product', err)
+    }
+  }, */
