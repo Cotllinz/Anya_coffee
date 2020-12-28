@@ -43,5 +43,20 @@ module.exports = {
         next()
       }
     })
+  },
+  getHistoryAdminRedis: (req, res, next) => {
+    client.get('getHistoryAdmin', (err, result) => {
+      if (!err && result) {
+        return helper.response(
+          res,
+          200,
+          'Success Get History Admin',
+          JSON.parse(result)
+        )
+      } else {
+        console.log('History Admin Add to Redis')
+        next()
+      }
+    })
   }
 }

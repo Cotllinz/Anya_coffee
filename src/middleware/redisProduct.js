@@ -21,7 +21,6 @@ module.exports = {
   },
   clearDataProductRedis: (req, res, next) => {
     client.keys('getProduct*', (_err, result) => {
-      console.log(result)
       if (result.length > 0) {
         result.forEach((value) => {
           client.del(value)
@@ -39,6 +38,22 @@ module.exports = {
           200,
           'Success Get Product',
           newResult.resultProduct,
+          newResult.newPage
+        )
+      } else {
+        next()
+      }
+    })
+  },
+  getCategoryRedis: (req, res, next) => {
+    client.get(`getProductCategory:${JSON.stringify(req.query)}`, (err, result) => {
+      if (!err && result) {
+        const newResult = JSON.parse(result)
+        return helper.response(
+          res,
+          200,
+          'Success Get Category',
+          newResult.resultCategory,
           newResult.newPage
         )
       } else {

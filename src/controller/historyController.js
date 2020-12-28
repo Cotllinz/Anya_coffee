@@ -5,7 +5,9 @@ const {
   getByIduser,
   deleteHistoryModel,
   offDetailsHistory,
-  searchHistory
+  searchHistory,
+  historyAdminConfirm,
+  getHistoryAdmin
 } = require('../model/historyModel')
 const helper = require('../helper/response')
 const redis = require('redis')
@@ -118,6 +120,27 @@ module.exports = {
       }
       await offDetailsHistory(deleteDetails, id)
       return helper.response(res, 200, 'Success Delete History', result)
+    } catch (err) {
+      return helper.response(res, 400, 'Bad Request', err)
+    }
+  },
+  AdminConfirmOrder: async (req, res) => {
+    try {
+      const { id } = req.params
+      const confirmOrder = {
+        status_history: 'ON'
+      }
+      const result = await historyAdminConfirm(confirmOrder, id)
+      return helper.response(res, 200, 'Order Done', result)
+    } catch (err) {
+      return helper.response(res, 400, 'Bad Request', err)
+    }
+  },
+  getAdminHistory: async (req, res) => {
+    try {
+      const result = await getHistoryAdmin()
+      client.setex('getHistoryAdmin', 3600, JSON.stringify(result))
+      return helper.response(res, 200, 'Success Get History Admin', result)
     } catch (err) {
       return helper.response(res, 400, 'Bad Request', err)
     }

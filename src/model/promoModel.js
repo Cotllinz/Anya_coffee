@@ -4,7 +4,7 @@ module.exports = {
   getAllPromoModal: () => {
     return new Promise((resolve, reject) => {
       connection.query(
-        'select * from coupon_product join size_typeproduct on coupon_product.id_coupon = size_typeproduct.id_sizeProduct join main_product on id_product = product_id where size_typeproduct.type ="Promo" && coupon_product.status_promo ="ON" && start_expired < end_expired order by id_coupon ASC',
+        'select * from coupon_product join size_typeproduct on coupon_product.product_id = size_typeproduct.id_Product join main_product on main_product.id_product = product_id where size_typeproduct.type ="Promo" && coupon_product.status_promo ="ON" && start_expired < end_expired order by id_coupon ASC',
         (err, result) => {
           !err ? resolve(result) : reject(new Error(err))
         }
@@ -25,28 +25,8 @@ module.exports = {
   getPromoLimitModel: (limit, offset) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        'select * from coupon_product join size_typeproduct on coupon_product.id_coupon = size_typeproduct.id_sizeproduct join main_product on id_product = product_id where coupon_product.status_promo = "ON" && size_typeproduct.type = "Promo" && start_expired < end_expired order by id_coupon ASC LIMIT ? OFFSET ?',
+        'select * from coupon_product join size_typeproduct on coupon_product.product_id = size_typeproduct.id_Product join main_product on main_product.id_product = coupon_product.product_id where coupon_product.status_promo = "ON" && size_typeproduct.type = "Promo" && start_expired < end_expired order by id_coupon ASC LIMIT ? OFFSET ?',
         [limit, offset],
-        (err, result) => {
-          !err ? resolve(result) : reject(new Error(err))
-        }
-      )
-    })
-  },
-  getPromoBySearch: (search) => {
-    return new Promise((resolve, reject) => {
-      connection.query(
-        `SELECT * FROM coupon_product WHERE coupon_product.status_promo = "ON" && coupon_product.name_productPromo LIKE "%${search}%"`,
-        (err, result) => {
-          !err ? resolve(result) : reject(new Error(err))
-        }
-      )
-    })
-  },
-  getPromoSort: (sort) => {
-    return new Promise((resolve, reject) => {
-      connection.query(
-        `select * from coupon_product order by normal_price * (discount_coupon/100) ${sort}`,
         (err, result) => {
           !err ? resolve(result) : reject(new Error(err))
         }
@@ -102,11 +82,11 @@ module.exports = {
   updateSizePromoModel: (data, id) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        'update size_typeproduct set ? where id_sizeProduct = ? && type ="Promo"',
+        'update size_typeproduct set ? where id_Product = ? && type ="Promo"',
         [data, id],
         (err, result) => {
           const newResult = {
-            id_sizeProduct: id,
+            id_Product: id,
             ...data
           }
           !err ? resolve(newResult) : reject(new Error(err))
@@ -132,11 +112,11 @@ module.exports = {
   deleteSizePromoModel: (data, id) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        'update size_typeproduct set ? where id_sizeProduct = ? && type ="Promo"',
+        'update size_typeproduct set ? where id_Product = ? && type ="Promo"',
         [data, id],
         (err, result) => {
           const newResult = {
-            id_sizeProduct: id,
+            id_Product: id,
             ...data
           }
           !err ? resolve(newResult) : reject(new Error(err))
@@ -155,3 +135,24 @@ module.exports = {
     })
   }
 }
+
+/*  getPromoBySearch: (search) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        `SELECT * FROM coupon_product WHERE coupon_product.status_promo = "ON" && coupon_product.name_productPromo LIKE "%${search}%"`,
+        (err, result) => {
+          !err ? resolve(result) : reject(new Error(err))
+        }
+      )
+    })
+  },
+  getPromoSort: (sort) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        `select * from coupon_product order by normal_price * (discount_coupon/100) ${sort}`,
+        (err, result) => {
+          !err ? resolve(result) : reject(new Error(err))
+        }
+      )
+    })
+  }, */

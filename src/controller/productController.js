@@ -132,7 +132,7 @@ module.exports = {
       const deliveryType = delivery.filter((e) => e === 'ON')
       if (
         nameProduct &&
-        req.file &&
+        /*   req.file && */
         priceProduct &&
         timestart &&
         timeend &&
@@ -161,7 +161,7 @@ module.exports = {
 
             const resultAddData = await AddProductModel(addData)
             const AddSize = {
-              id_sizeProduct: resultAddData.id_product,
+              id_Product: resultAddData.id_product,
               size_L: sizeL || 'OFF',
               size_R: sizeR || 'OFF',
               size_XL: sizeXL || 'OFF',
