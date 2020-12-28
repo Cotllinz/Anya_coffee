@@ -10,9 +10,7 @@ const {
   deleteSizeProductModel,
   getProductCount,
   getProductLimitModel,
-  getProductSort,
-  /* getProductSearchCount, */
-  searchingProduct
+  getProductSearchCount
 } = require('../model/productModel')
 const helper = require('../helper/response')
 const qs = require('querystring')
@@ -40,10 +38,27 @@ module.exports = {
   },
   Productlimit: async (req, res) => {
     try {
-      let { page, limit } = req.query
+      let { page, limit, search, sort } = req.query
       page = parseInt(page)
       limit = parseInt(limit)
-      const totalProduct = await getProductCount()
+      let searching
+      if (search) {
+        searching = search
+      } else {
+        searching = ''
+      }
+      let sorting
+      if (sort) {
+        sorting = sort
+      } else {
+        sorting = ''
+      }
+      let totalProduct
+      if (search) {
+        totalProduct = await getProductSearchCount(search)
+      } else {
+        totalProduct = await getProductCount()
+      }
       const totalPage = Math.ceil(totalProduct / limit)
       const offset = page * limit - limit
       const prevLink =
@@ -61,7 +76,12 @@ module.exports = {
         prevLink: prevLink && `http://localhost:3000/product/limit?${prevLink}`
       }
 
-      const resultProduct = await getProductLimitModel(limit, offset)
+      const resultProduct = await getProductLimitModel(
+        limit,
+        offset,
+        searching,
+        sorting
+      )
       const newData = {
         resultProduct,
         newPage
@@ -83,30 +103,7 @@ module.exports = {
       return helper.response(res, 400, 'Invalid GET Product', err)
     }
   },
-  getSortingAscProduct: async (req, res) => {
-    try {
-      const { sort } = req.query
-      console.log(sort)
-      const result = await getProductSort(sort)
-      return helper.response(res, 200, 'Success Sort and GET Product', result)
-    } catch (err) {
-      return helper.response(res, 400, 'Invalid GET Sort Product', err)
-    }
-  },
-  searchProduct: async (req, res) => {
-    try {
-      const { search } = req.query
-      const resultSearchProduct = await searchingProduct(search)
-      return helper.response(
-        res,
-        200,
-        'Success GET Product',
-        resultSearchProduct
-      )
-    } catch (err) {
-      return helper.response(res, 400, 'Invalid GET Search Product', err)
-    }
-  },
+
   AddProduct: async (req, res) => {
     try {
       const {
@@ -182,6 +179,9 @@ module.exports = {
               resultAddData
             )
           } else {
+            fs.unlink(`./productImage/${req.file.filename}`, (err) => {
+              if (err) throw err
+            })
             return helper.response(
               res,
               404,
@@ -189,6 +189,9 @@ module.exports = {
             )
           }
         } else {
+          fs.unlink(`./productImage/${req.file.filename}`, (err) => {
+            if (err) throw err
+          })
           return helper.response(
             res,
             404,
@@ -196,6 +199,9 @@ module.exports = {
           )
         }
       } else {
+        fs.unlink(`./productImage/${req.file.filename}`, (err) => {
+          if (err) throw err
+        })
         return helper.response(
           res,
           404,
@@ -203,6 +209,9 @@ module.exports = {
         )
       }
     } catch (err) {
+      fs.unlink(`./productImage/${req.file.filename}`, (err) => {
+        if (err) throw err
+      })
       return helper.response(res, 400, 'Invalid Add Product', err)
     }
   },
@@ -386,3 +395,28 @@ module.exports = {
     }
   }
 }
+
+/* getSortingAscProduct: async (req, res) => {
+    try {
+      const { sort } = req.query
+      console.log(sort)
+      const result = await getProductSort(sort)
+      return helper.response(res, 200, 'Success Sort and GET Product', result)
+    } catch (err) {
+      return helper.response(res, 400, 'Invalid GET Sort Product', err)
+    }
+  },
+  searchProduct: async (req, res) => {
+    try {
+      const { search } = req.query
+      const resultSearchProduct = await searchingProduct(search)
+      return helper.response(
+        res,
+        200,
+        'Success GET Product',
+        resultSearchProduct
+      )
+    } catch (err) {
+      return helper.response(res, 400, 'Invalid GET Search Product', err)
+    }
+  }, */

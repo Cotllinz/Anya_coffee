@@ -6,9 +6,7 @@ const {
   updateProduct,
   deleteProduct,
   getProductPromoProduct,
-  Productlimit,
-  getSortingAscProduct,
-  searchProduct
+  Productlimit
 } = require('../controller/productController')
 const {
   auth,
@@ -41,8 +39,7 @@ route.post(
   uploadFilterProduct,
   AddProduct
 )
-route.get('/sort', getSortingAscProduct)
-route.get('/items', searchProduct)
+
 route.get('/:id', getProductByIdRedis, getProductById)
 route.patch(
   '/:id',
@@ -61,3 +58,5 @@ route.patch(
 )
 
 module.exports = route
+/* route.get('/sort', getSortingAscProduct)
+route.get('/items', searchProduct) */

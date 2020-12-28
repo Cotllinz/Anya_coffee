@@ -23,36 +23,13 @@ module.exports = {
       )
     })
   },
-  getProductLimitModel: (limit, offset) => {
+  getProductLimitModel: (limit, offset, search, sort) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        'select * from main_product join size_typeproduct on main_product.id_product = size_typeproduct.id_sizeproduct where main_product.status_product = "ON" && size_typeproduct.type = "Product" LIMIT ? OFFSET ?',
-        [limit, offset],
+        `select * from main_product join size_typeproduct on main_product.id_product = size_typeproduct.id_sizeproduct where main_product.status_product = "ON" && size_typeproduct.type = "Product" && main_product.name_product LIKE "%${search}%" ${sort} LIMIT ${limit} OFFSET ${offset}`,
         (err, result) => {
-          /* console.log(result)
-        console.log(err) */
-          !err ? resolve(result) : reject(new Error(err))
-        }
-      )
-    })
-  },
-  getProductSort: (sort) => {
-    return new Promise((resolve, reject) => {
-      connection.query(
-        `select * from main_product order by price_product ${sort}`,
-        (err, result) => {
-          !err ? resolve(result) : reject(new Error(err))
-        }
-      )
-    })
-  },
-  searchingProduct: (search) => {
-    return new Promise((resolve, reject) => {
-      connection.query(
-        `SELECT * FROM main_product WHERE main_product.status_product = "ON" && main_product.name_product LIKE "%${search}%"`,
-        (err, result) => {
-          /* console.log(result)
-            console.log(err) */
+          /*  console.log(result)
+          console.log(err) */
           !err ? resolve(result) : reject(new Error(err))
         }
       )
@@ -188,8 +165,8 @@ module.exports = {
         }
       )
     })
-  }
-  /*   getProductSearchCount: (search) => {
+  },
+  getProductSearchCount: (search) => {
     return new Promise((resolve, reject) => {
       connection.query(
         `select count(*) as total from main_product where status_product = "ON" && main_product.name_product LIKE "%${search}%"`,
@@ -198,5 +175,38 @@ module.exports = {
         }
       )
     })
-  } */
+  }
 }
+
+/*   getProductSort: (sort) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        `select * from main_product order by price_product ${sort}`,
+        (err, result) => {
+          !err ? resolve(result) : reject(new Error(err))
+        }
+      )
+    })
+  },
+  searchingProduct: (search) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        `SELECT * FROM main_product WHERE main_product.status_product = "ON" && main_product.name_product LIKE "%${search}%"`,
+        (err, result) => {
+          !err ? resolve(result) : reject(new Error(err))
+        }
+      )
+    })
+  }, */
+/*  getProductLimitModel: (limit, offset) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'select * from main_product join size_typeproduct on main_product.id_product = size_typeproduct.id_sizeproduct where main_product.status_product = "ON" && size_typeproduct.type = "Product" LIMIT ? OFFSET ?',
+        [limit, offset],
+        (err, result) => {
+
+          !err ? resolve(result) : reject(new Error(err))
+        }
+      )
+    })
+  }, */
