@@ -132,7 +132,7 @@ module.exports = {
       const deliveryType = delivery.filter((e) => e === 'ON')
       if (
         nameProduct &&
-        /*   req.file && */
+        req.file &&
         priceProduct &&
         timestart &&
         timeend &&
