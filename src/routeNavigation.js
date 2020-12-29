@@ -4,11 +4,11 @@ const promo = require('./routes/promoRoute')
 const category = require('./routes/categoryRoute')
 const history = require('./routes/historyRoute')
 const user = require('./routes/userRoute')
-
+const dashboard = require('./routes/dashboardRoute')
 routeing.use('/product', product)
 routeing.use('/promo', promo)
 routeing.use('/category', category)
 routeing.use('/history', history)
 routeing.use('/user', user)
-
+routeing.use('/dashboard', dashboard)
 module.exports = routeing
