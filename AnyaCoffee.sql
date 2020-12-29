@@ -120,7 +120,7 @@ CREATE TABLE IF NOT EXISTS `main_product` (
   `name_product` varchar(50) NOT NULL DEFAULT '',
   `image_product` varchar(100) DEFAULT NULL,
   `price_product` int(11) NOT NULL,
-  `desc_product` longtext NOT NULL DEFAULT '0',
+  `desc_product` longtext NOT NULL,
   `qty_product` int(11) NOT NULL,
   `category_id` int(11) NOT NULL DEFAULT 0,
   `homeDeliv` enum('ON','OFF') NOT NULL DEFAULT 'OFF',
