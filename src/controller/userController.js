@@ -89,6 +89,7 @@ module.exports = {
           result[0].password
         )
         if (checkPassword) {
+          const userRoles = result[0].roles === 1 ? 'Admin' : ''
           if (result[0].status === 'OFF') {
             const transporter = nodemailer.createTransport({
               service: 'gmail',
@@ -100,8 +101,8 @@ module.exports = {
             const mailOPtion = {
               from: `${process.env.user}`,
               to: `${result[0].email_user}`,
-              subject: `Thanks You ${result[0].username}, Anya Coffee`,
-              html: `<h2>Hello ${result[0].username} Thanks You for activation your account Enjoy Shopping</h2>`
+              subject: `Thanks You ${userRoles} ${result[0].username} || Anya Coffee`,
+              html: `<h2>Hello ${userRoles} ${result[0].username} Thanks You for activation your account Enjoy Shopping</h2>`
             }
 
             transporter.sendMail(mailOPtion, (err, result) => {

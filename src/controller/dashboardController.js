@@ -1,7 +1,8 @@
 const helper = require('../helper/response')
 const {
   getSubtotalbyDayModel,
-  getSubtotalbyYearModel
+  getSubtotalbyYearModel,
+  getTotalorderbyMonth
 } = require('../model/dashboardModel')
 
 module.exports = {
@@ -19,6 +20,19 @@ module.exports = {
       return helper.response(res, 200, 'Success Get Subtotal by Year', result)
     } catch (err) {
       return helper.response(res, 400, 'Invalid Get Subtotal by Year', err)
+    }
+  },
+  getTObyMount: async (req, res) => {
+    try {
+      const result = await getTotalorderbyMonth()
+      return helper.response(
+        res,
+        200,
+        'Success Get Total Order by Month',
+        result
+      )
+    } catch (err) {
+      return helper.response(res, 400, 'Invalid Get Total Order by Month', err)
     }
   }
 }
