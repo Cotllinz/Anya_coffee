@@ -10,14 +10,14 @@ module.exports = {
           (err && err.name === 'JsonWebTokenError') ||
           (err && err.name === 'TokenExpiredError')
         ) {
-          return helper.response(res, 400, 'Login First', err.message)
+          return helper.response(res, 403, 'Login First', err.message)
         } else {
           req.decodeToken = result
           next()
         }
       })
     } else {
-      return helper.response(res, 400, 'Please Login First !')
+      return helper.response(res, 403, 'Please Login First !')
     }
   },
   authIsadmin: (req, res, next) => {

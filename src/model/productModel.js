@@ -42,13 +42,13 @@ module.exports = {
         'insert into main_product set ?',
         data,
         (err, result) => {
-          /*   console.log(result)
-          console.log(err) */
-          const NewResult = {
+          console.log(result)
+          console.log(err)
+          /*  const NewResult = {
             id_product: result.insertId,
             ...data
           }
-          !err ? resolve(NewResult) : reject(new Error(err))
+          !err ? resolve(NewResult) : reject(new Error(err)) */
         }
       )
     })
