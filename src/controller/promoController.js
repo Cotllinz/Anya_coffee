@@ -238,11 +238,14 @@ module.exports = {
               size_400: size400 || 'OFF',
               status_product: resultUpdatePromo.status_promo
             }
-            await updateSizePromoModel(updateSizePromo, id)
+            await updateSizePromoModel(
+              updateSizePromo,
+              resultUpdatePromo.product_id
+            )
             return helper.response(
               res,
               200,
-              'Succes Add Promo Product',
+              'Succes Update Promo Product',
               resultUpdatePromo
             )
           } else {
@@ -278,7 +281,7 @@ module.exports = {
       const deleteSizePromo = {
         status_product: 'OFF'
       }
-      await deleteSizePromoModel(deleteSizePromo, id)
+      await deleteSizePromoModel(deleteSizePromo, checkId[0].product_id)
       if (checkId.length > 0) {
         return helper.response(res, 200, `Success Delete Id ${id}`, result)
       } else {

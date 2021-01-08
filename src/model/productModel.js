@@ -28,8 +28,6 @@ module.exports = {
       connection.query(
         `select * from main_product join size_typeproduct on main_product.id_product = size_typeproduct.id_Product where main_product.status_product = "ON" && size_typeproduct.type = "Product" && main_product.name_product LIKE "%${search}%" ${sort} LIMIT ${limit} OFFSET ${offset}`,
         (err, result) => {
-          /*  console.log(result)
-          console.log(err) */
           !err ? resolve(result) : reject(new Error(err))
         }
       )
@@ -42,13 +40,11 @@ module.exports = {
         'insert into main_product set ?',
         data,
         (err, result) => {
-          console.log(result)
-          console.log(err)
-          /*  const NewResult = {
+          const NewResult = {
             id_product: result.insertId,
             ...data
           }
-          !err ? resolve(NewResult) : reject(new Error(err)) */
+          !err ? resolve(NewResult) : reject(new Error(err))
         }
       )
     })
@@ -63,8 +59,6 @@ module.exports = {
           const newResult = {
             ...data
           }
-          /*  console.log(newResult)
-          console.log(err) */
           !err ? resolve(newResult) : reject(new Error(err))
         }
       )
@@ -77,8 +71,6 @@ module.exports = {
         'select * from main_product join size_typeproduct on main_product.id_product = size_typeproduct.id_Product where main_product.id_product = ? && main_product.status_product = "ON" && size_typeproduct.type = "Product"',
         id,
         (err, result) => {
-          /*  console.log(result)
-          console.log(err) */
           !err ? resolve(result) : reject(new Error(err))
         }
       )
@@ -95,8 +87,6 @@ module.exports = {
             id_product: id,
             ...data
           }
-          /*   console.log(newResult)
-          console.log(err) */
           !err ? resolve(newResult) : reject(new Error(err))
         }
       )
@@ -113,8 +103,6 @@ module.exports = {
             id_Product: id,
             ...data
           }
-          /*  console.log(newResult)
-          console.log(err) */
           !err ? resolve(newResult) : reject(new Error(err))
         }
       )
@@ -131,8 +119,6 @@ module.exports = {
             id_product: id,
             ...data
           }
-          /*   console.log(newResult)
-          console.log(err)  */
           !err ? resolve(newResult) : reject(new Error(err))
         }
       )
@@ -149,8 +135,6 @@ module.exports = {
             id_Product: id,
             ...data
           }
-          /* console.log(newResult)
-          console.log(err) */
           !err ? resolve(newResult) : reject(new Error(err))
         }
       )
