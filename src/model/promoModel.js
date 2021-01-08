@@ -14,7 +14,7 @@ module.exports = {
   getPromoByIdModal: (id) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        'select * from coupon_product where id_coupon = ?',
+        'select * from coupon_product join main_product on product_id = id_product join size_typeproduct on coupon_product.product_id = size_typeproduct.id_Product where id_coupon = ? && size_typeproduct.type = "Promo" && status_promo = "ON"',
         id,
         (err, result) => {
           !err ? resolve(result) : reject(new Error(err))
