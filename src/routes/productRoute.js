@@ -21,6 +21,7 @@ const {
   getProducthaveaPromoRedis,
   getProductRedis
 } = require('../middleware/redisProduct')
+const { clearDataPromoRedis } = require('../middleware/redisPromo')
 
 route.get('/', getProductRedis, getProductandPromoProduct)
 route.get('/limit', getProductRedislimit, Productlimit)
@@ -46,6 +47,7 @@ route.patch(
   auth,
   authIsadmin,
   clearDataProductRedis,
+  clearDataPromoRedis,
   uploadFilterProduct,
   updateProduct
 )
@@ -54,6 +56,7 @@ route.patch(
   auth,
   authIsadmin,
   clearDataProductRedis,
+  clearDataPromoRedis,
   deleteProduct
 )
 

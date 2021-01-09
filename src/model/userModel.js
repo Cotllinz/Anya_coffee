@@ -28,8 +28,6 @@ module.exports = {
         'update user set ? where email_user = ?',
         [data, email],
         (err, result) => {
-          /*     console.log(err)
-          console.log(result) */
           const newResult = {
             email_user: email,
             ...data
@@ -45,8 +43,6 @@ module.exports = {
         'update user set ? where email_user = ?',
         [data, email],
         (err, result) => {
-          /*   console.log(err)
-          console.log(result) */
           const newResult = {
             email_user: email,
             ...data
