@@ -158,6 +158,23 @@ module.exports = {
       return helper.response(res, 400, 'Bad Request', err)
     }
   },
+  getUser: async (req, res) => {
+    try {
+      const { email } = req.params
+      const result = await loginUsermodel(email)
+      if (result.length > 0) {
+        return helper.response(res, 200, `Success Get Email ${email}`, result)
+      } else {
+        return helper.response(
+          res,
+          400,
+          `Your Email ${email} not Registed ! Please Sign up First`
+        )
+      }
+    } catch (err) {
+      return helper.response(res, 400, 'Bad Request', err)
+    }
+  },
   updateUser: async (req, res) => {
     try {
       const { email } = req.params
