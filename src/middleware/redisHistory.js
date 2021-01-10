@@ -10,14 +10,30 @@ module.exports = {
         return helper.response(
           res,
           200,
-          `Success Get History by user id ${id}`,
+          `Success Get History Details by user id ${id}`,
           JSON.parse(result)
         )
       } else {
-        console.log(`History by user id ${id} Add to Redis`)
         next()
       }
     })
+  },
+  getHistoryDetailsByIdRedis: (req, res, next) => {
+    client.get(
+      `getHistoryDetailsByuserId:${JSON.stringify(req.query)}`,
+      (err, result) => {
+        if (!err && result) {
+          return helper.response(
+            res,
+            200,
+            'Success Get History Details',
+            JSON.parse(result)
+          )
+        } else {
+          next()
+        }
+      }
+    )
   },
   clearDataHistoryRedis: (req, res, next) => {
     client.keys('getHistory*', (_err, result) => {
@@ -39,7 +55,6 @@ module.exports = {
           JSON.parse(result)
         )
       } else {
-        console.log('History Add to Redis')
         next()
       }
     })
@@ -54,7 +69,7 @@ module.exports = {
           JSON.parse(result)
         )
       } else {
-        console.log('History Admin Add to Redis')
+        /* console.log('History Admin Add to Redis') */
         next()
       }
     })

@@ -2,12 +2,13 @@ const {
   addHistory,
   addDetailsHistory,
   getHistory,
-  getByIduser,
+  getHistoryDetailsByIduser,
   deleteHistoryModel,
   offDetailsHistory,
   searchHistory,
   historyAdminConfirm,
-  getHistoryAdmin
+  getHistoryAdmin,
+  getHistoryByIduser
 } = require('../model/historyModel')
 const helper = require('../helper/response')
 const redis = require('redis')
@@ -23,10 +24,39 @@ module.exports = {
       return helper.response(res, 400, 'Bad Request', err)
     }
   },
-  getbyid: async (req, res) => {
+  getHistoryDetailsbyid: async (req, res) => {
+    try {
+      let { id, idHistory } = req.query
+      idHistory = parseInt(idHistory)
+      id = parseInt(id)
+      const resultId = await getHistoryDetailsByIduser(id, idHistory)
+      if (resultId.length > 0) {
+        client.setex(
+          `getHistoryDetailsByuserId:${JSON.stringify(req.query)}`,
+          3600,
+          JSON.stringify(resultId)
+        )
+        return helper.response(
+          res,
+          200,
+          `Success Get History Details by user id ${id}`,
+          resultId
+        )
+      } else {
+        return helper.response(
+          res,
+          404,
+          `Invalid Get History Details by user id ${id} Not Found`
+        )
+      }
+    } catch (err) {
+      return helper.response(res, 400, 'Bad Request', err)
+    }
+  },
+  getHistorybyid: async (req, res) => {
     try {
       const { id } = req.params
-      const resultId = await getByIduser(id)
+      const resultId = await getHistoryByIduser(id)
       if (resultId.length > 0) {
         client.setex(`getHistoryByuserId:${id}`, 3600, JSON.stringify(resultId))
         return helper.response(

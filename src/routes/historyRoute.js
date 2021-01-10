@@ -3,11 +3,12 @@ const {
   addHistory,
   addDetails,
   getHistory,
-  getbyid,
+  getHistoryDetailsbyid,
   deleteHistory,
   searchHistory,
   AdminConfirmOrder,
-  getAdminHistory
+  getAdminHistory,
+  getHistorybyid
 } = require('../controller/historyController')
 const {
   auth,
@@ -18,12 +19,26 @@ const {
   clearDataHistoryRedis,
   getHistoryByIdRedis,
   getHistoryRedis,
-  getHistoryAdminRedis
+  getHistoryAdminRedis,
+  getHistoryDetailsByIdRedis
 } = require('../middleware/redisHistory')
 route.get('/', auth, authIsAdminorUser, getHistoryRedis, getHistory)
 route.get('/admin', auth, authIsadmin, getHistoryAdminRedis, getAdminHistory)
 route.get('/search', auth, authIsAdminorUser, searchHistory)
-route.get('/:id', auth, authIsAdminorUser, getHistoryByIdRedis, getbyid)
+route.get(
+  '/history/:id',
+  auth,
+  authIsAdminorUser,
+  getHistoryByIdRedis,
+  getHistorybyid
+)
+route.get(
+  '/historydetails',
+  auth,
+  authIsAdminorUser,
+  getHistoryDetailsByIdRedis,
+  getHistoryDetailsbyid
+)
 route.post('/', auth, authIsAdminorUser, clearDataHistoryRedis, addHistory)
 route.post(
   '/details',
