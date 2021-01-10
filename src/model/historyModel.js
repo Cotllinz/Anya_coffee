@@ -11,10 +11,21 @@ module.exports = {
       )
     })
   },
-  getByIduser: (id) => {
+  getHistoryDetailsByIduser: (id, historyId) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        'select * from history_product join detail_history on id_history = id_historydetails where user_id = ? && status_details = "ON"',
+        'select payment_method, invoice_payment, sub_total, history_product.create_at, qty, total, size_detail,status_delivery,status_table,name_product,image_product from history_product join detail_history on id_history = id_historydetails LEFT JOIN main_product ON detail_history.id_product = main_product.id_product  where user_id = ? && id_historydetails = ? && status_details = "ON"',
+        [id, historyId],
+        (err, result) => {
+          !err ? resolve(result) : reject(new Error(err))
+        }
+      )
+    })
+  },
+  getHistoryByIduser: (id) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'select * from history_product where user_id = ? && status_history = "OFF"',
         id,
         (err, result) => {
           !err ? resolve(result) : reject(new Error(err))

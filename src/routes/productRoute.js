@@ -61,5 +61,3 @@ route.patch(
 )
 
 module.exports = route
-/* route.get('/sort', getSortingAscProduct)
-route.get('/items', searchProduct) */
