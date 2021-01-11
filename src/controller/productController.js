@@ -134,11 +134,11 @@ module.exports = {
         nameProduct &&
         req.file &&
         priceProduct &&
-        timestart &&
-        timeend &&
+        timestart !== 'null' &&
+        timeend !== 'null' &&
         descProduct &&
-        qtyProduct &&
-        categoryId
+        qtyProduct !== '0' &&
+        categoryId !== '0'
       ) {
         if (NewSize.length >= 1 && NewSize.length <= 3) {
           if (deliveryType.length >= 1) {
@@ -199,9 +199,11 @@ module.exports = {
           )
         }
       } else {
-        fs.unlink(`./productImage/${req.file.filename}`, (err) => {
-          if (err) throw err
-        })
+        if ((req.file)) {
+          fs.unlink(`./productImage/${req.file.filename}`, (err) => {
+            if (err) throw err
+          })
+        }
         return helper.response(
           res,
           404,

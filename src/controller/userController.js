@@ -48,7 +48,7 @@ module.exports = {
             subject: `Hello ${userName}, Anya Coffee`,
             html: `<h2>Hello ${userName} Thanks You for Register in Anya Coffee for activation your account please login first</h2>
                   <p>Click This Link For Activation ur account</p>
-                  <a href = "https://web.postman.co/workspace/My-Workspace~f076a5f9-603a-4078-85e0-4fa61624fab0/request/8217070-4ce9bf00-b450-4fdf-af0a-df53c301b7d3">PostMan Server</a>`
+                  <a href ="http://localhost:8081/Login">Activation Email</a>`
           }
           transporter.sendMail(mailOPtion, (err, result) => {
             if (err) {

@@ -57,6 +57,12 @@ module.exports = {
     try {
       const { id } = req.params
       const resultId = await getHistoryByIduser(id)
+      for (let i = 0; i < resultId.length; i++) {
+        resultId[i].orders = await getHistoryDetailsByIduser(
+          resultId[i].user_id,
+          resultId[i].id_history
+        )
+      }
       if (resultId.length > 0) {
         client.setex(`getHistoryByuserId:${id}`, 3600, JSON.stringify(resultId))
         return helper.response(
