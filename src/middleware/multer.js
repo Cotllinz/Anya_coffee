@@ -43,13 +43,13 @@ const fileFilter = (req, file, cb) => {
 const uploadUser = multer({
   storage: storageUser,
   fileFilter,
-  limits: { fileSize: 15000000 }
+  limits: { fileSize: 200000 }
 }).single('userImage')
 
 const uploadProduct = multer({
   storage: storageProduct,
   fileFilter,
-  limits: { fileSize: 15000000 }
+  limits: { fileSize: 200000 }
 }).single('imageProduct')
 
 const uploadFilterUser = (req, res, next) => {
@@ -57,7 +57,7 @@ const uploadFilterUser = (req, res, next) => {
     /*   console.log(err) */
     if (err && err.code === 'LIMIT_FILE_SIZE') {
       // A Multer error occurred when uploading.
-      return helper.response(res, 400, 'Max File Size 15 Mb')
+      return helper.response(res, 400, 'Max File Size 5 Mb')
     } else if (err instanceof multer.MulterError) {
       return helper.response(res, 400, err.message)
     } else if (err) {
@@ -72,7 +72,7 @@ const uploadFilterUser = (req, res, next) => {
 const uploadFilterProduct = (req, res, next) => {
   uploadProduct(req, res, (err) => {
     if (err && err.code === 'LIMIT_FILE_SIZE') {
-      return helper.response(res, 400, 'Max File Size 15 Mb')
+      return helper.response(res, 400, 'Max File Size 5 Mb')
     } else if (err instanceof multer.MulterError) {
       return helper.response(res, 400, err.message)
     } else if (err) {
