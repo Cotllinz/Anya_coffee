@@ -2,7 +2,8 @@ const helper = require('../helper/response')
 const {
   getSubtotalbyDayModel,
   getSubtotalbyYearModel,
-  getTotalorderbyMonth
+  getTotalorderbyMonth,
+  getChartMount
 } = require('../model/dashboardModel')
 
 module.exports = {
@@ -33,6 +34,24 @@ module.exports = {
       )
     } catch (err) {
       return helper.response(res, 400, 'Invalid Get Total Order by Month', err)
+    }
+  },
+  getMountChart: async (req, res) => {
+    try {
+      const result = await getChartMount()
+      return helper.response(
+        res,
+        200,
+        'Success Get Total Order by Month on chart',
+        result
+      )
+    } catch (err) {
+      return helper.response(
+        res,
+        400,
+        'Invalid Get Total Order by for chart',
+        err
+      )
     }
   }
 }
