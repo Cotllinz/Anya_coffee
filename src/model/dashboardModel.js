@@ -11,6 +11,16 @@ module.exports = {
       )
     })
   },
+  getChartMount: () => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'SELECT MONTH(history_product.create_at) AS Month, SUM(history_product.sub_total) AS Price FROM history_product WHERE YEAR(history_product.create_at) = YEAR(NOW()) GROUP BY MONTH(history_product.create_at)',
+        (err, result) => {
+          !err ? resolve(result) : reject(new Error(err))
+        }
+      )
+    })
+  },
   getSubtotalbyYearModel: () => {
     return new Promise((resolve, reject) => {
       connection.query(
