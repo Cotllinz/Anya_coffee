@@ -46,9 +46,9 @@ CREATE TABLE IF NOT EXISTS `coupon_product` (
   `start_expired` date DEFAULT NULL,
   `end_expired` date DEFAULT NULL,
   `status_promo` enum('ON','OFF') NOT NULL DEFAULT 'ON',
-  `create_at` datetime DEFAULT NULL,
-  `delete_at` datetime DEFAULT NULL,
-  `update_at` datetime DEFAULT NULL,
+  `create_at` datetime NOT NULL,
+  `delete_at` datetime NOT NULL,
+  `update_at` datetime NOT NULL,
   PRIMARY KEY (`id_coupon`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
@@ -68,8 +68,8 @@ CREATE TABLE IF NOT EXISTS `detail_history` (
   `size_detail` varchar(50) DEFAULT NULL,
   `status_delivery` varchar(50) DEFAULT NULL,
   `status_table` varchar(50) DEFAULT NULL,
-  `create_at` datetime DEFAULT NULL,
-  `delete_at` datetime DEFAULT NULL,
+  `create_at` datetime NOT NULL,
+  `delete_at` datetime NOT NULL,
   `status_details` enum('ON','OFF') NOT NULL DEFAULT 'ON',
   PRIMARY KEY (`id_detail`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
@@ -90,8 +90,8 @@ CREATE TABLE IF NOT EXISTS `history_product` (
   `invoice_payment` varchar(50) DEFAULT NULL,
   `sub_total` int(11) DEFAULT NULL,
   `status_history` enum('ON','OFF') NOT NULL DEFAULT 'ON',
-  `create_at` datetime DEFAULT NULL,
-  `delete_at` datetime DEFAULT NULL,
+  `create_at` datetime NOT NULL,
+  `delete_at` datetime NOT NULL,
   PRIMARY KEY (`id_history`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
@@ -118,9 +118,9 @@ CREATE TABLE IF NOT EXISTS `main_product` (
   `time_start` varchar(50) DEFAULT NULL,
   `time_end` varchar(50) DEFAULT NULL,
   `code_discount` varchar(50) DEFAULT NULL,
-  `create_at` datetime DEFAULT NULL,
-  `update_at` datetime DEFAULT NULL,
-  `delete_at` datetime DEFAULT NULL,
+  `create_at` datetime NOT NULL,
+  `update_at` datetime NOT NULL,
+  `delete_at` datetime NOT NULL,
   PRIMARY KEY (`id_product`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
@@ -168,8 +168,8 @@ CREATE TABLE IF NOT EXISTS `user` (
   `gender` enum('MALE','FEMALE') DEFAULT NULL,
   `roles` tinyint(2) DEFAULT NULL,
   `status` enum('ON','OFF') NOT NULL DEFAULT 'OFF',
-  `create_at` datetime DEFAULT NULL,
-  `update_at` datetime DEFAULT NULL,
+  `create_at` datetime NOT NULL,
+  `update_at` datetime NOT NULL,
   PRIMARY KEY (`id_user`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
