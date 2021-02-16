@@ -202,7 +202,7 @@ module.exports = {
             imageUser = {
               image_user: getEmail[0].image_user
             }
-          } else if (getEmail[0].image_user === '') {
+          } else if (getEmail[0].image_user === null) {
             imageUser = {
               image_user: req.file === undefined ? '' : req.file.filename
             }
