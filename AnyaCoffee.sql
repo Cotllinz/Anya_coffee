@@ -46,16 +46,16 @@ CREATE TABLE IF NOT EXISTS `coupon_product` (
   `start_expired` date DEFAULT NULL,
   `end_expired` date DEFAULT NULL,
   `status_promo` enum('ON','OFF') NOT NULL DEFAULT 'ON',
-  `create_at` datetime NOT NULL,
-  `delete_at` datetime NOT NULL,
-  `update_at` datetime NOT NULL,
+  `create_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `delete_at` timestamp NULL DEFAULT NULL,
+  `update_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id_coupon`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table anya_coffee.coupon_product: ~1 rows (approximately)
+-- Dumping data for table anya_coffee.coupon_product: ~0 rows (approximately)
 /*!40000 ALTER TABLE `coupon_product` DISABLE KEYS */;
 INSERT INTO `coupon_product` (`id_coupon`, `product_id`, `code_coupon`, `min_purchase`, `homeDeliv`, `dineIn`, `takeaway`, `discount_coupon`, `start_expired`, `end_expired`, `status_promo`, `create_at`, `delete_at`, `update_at`) VALUES
-	(1, 1, 'Nasgor', 3, 'OFF', 'OFF', 'OFF', 20, '2021-02-16', '2021-02-17', 'ON', '2021-02-16 15:53:41', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+	(1, 1, 'Nasgor', 3, 'OFF', 'OFF', 'OFF', 20, '2021-02-16', '2021-02-17', 'ON', '2021-02-16 15:53:41', '0000-00-00 00:00:00', NULL);
 /*!40000 ALTER TABLE `coupon_product` ENABLE KEYS */;
 
 -- Dumping structure for table anya_coffee.detail_history
@@ -68,8 +68,8 @@ CREATE TABLE IF NOT EXISTS `detail_history` (
   `size_detail` varchar(50) DEFAULT NULL,
   `status_delivery` varchar(50) DEFAULT NULL,
   `status_table` varchar(50) DEFAULT NULL,
-  `create_at` datetime NOT NULL,
-  `delete_at` datetime NOT NULL,
+  `create_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `delete_at` timestamp NULL DEFAULT NULL,
   `status_details` enum('ON','OFF') NOT NULL DEFAULT 'ON',
   PRIMARY KEY (`id_detail`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
@@ -90,8 +90,8 @@ CREATE TABLE IF NOT EXISTS `history_product` (
   `invoice_payment` varchar(50) DEFAULT NULL,
   `sub_total` int(11) DEFAULT NULL,
   `status_history` enum('ON','OFF') NOT NULL DEFAULT 'ON',
-  `create_at` datetime NOT NULL,
-  `delete_at` datetime NOT NULL,
+  `create_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `delete_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id_history`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
@@ -118,13 +118,13 @@ CREATE TABLE IF NOT EXISTS `main_product` (
   `time_start` varchar(50) DEFAULT NULL,
   `time_end` varchar(50) DEFAULT NULL,
   `code_discount` varchar(50) DEFAULT NULL,
-  `create_at` datetime NOT NULL,
-  `update_at` datetime NOT NULL,
-  `delete_at` datetime NOT NULL,
+  `create_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `update_at` timestamp NULL DEFAULT NULL,
+  `delete_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id_product`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table anya_coffee.main_product: ~1 rows (approximately)
+-- Dumping data for table anya_coffee.main_product: ~0 rows (approximately)
 /*!40000 ALTER TABLE `main_product` DISABLE KEYS */;
 INSERT INTO `main_product` (`id_product`, `name_product`, `image_product`, `price_product`, `desc_product`, `qty_product`, `category_id`, `homeDeliv`, `dineIn`, `takeaway`, `status_product`, `time_start`, `time_end`, `code_discount`, `create_at`, `update_at`, `delete_at`) VALUES
 	(1, 'Nasi Goreng Pete', '2021-02-16T15-53-01.197Znasgor.jpg', 20000, 'Makanan Pembuka Terbaik Dikalangan Masyarakat Indonesia', 50, 3, 'OFF', 'ON', 'ON', 'ON', '7 am', '4 pm', '', '2021-02-16 15:53:01', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
@@ -168,8 +168,8 @@ CREATE TABLE IF NOT EXISTS `user` (
   `gender` enum('MALE','FEMALE') DEFAULT NULL,
   `roles` tinyint(2) DEFAULT NULL,
   `status` enum('ON','OFF') NOT NULL DEFAULT 'OFF',
-  `create_at` datetime NOT NULL,
-  `update_at` datetime NOT NULL,
+  `create_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `update_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id_user`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
