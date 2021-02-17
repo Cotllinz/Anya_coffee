@@ -106,7 +106,7 @@ INSERT INTO `history_product` (`id_history`, `user_id`, `payment_method`, `invoi
 CREATE TABLE IF NOT EXISTS `main_product` (
   `id_product` int(11) NOT NULL AUTO_INCREMENT,
   `name_product` varchar(50) DEFAULT NULL,
-  `image_product` varchar(100) DEFAULT NULL,
+  `image_product` varchar(200) DEFAULT NULL,
   `price_product` int(11) DEFAULT NULL,
   `desc_product` longtext DEFAULT NULL,
   `qty_product` int(11) DEFAULT NULL,
@@ -122,12 +122,13 @@ CREATE TABLE IF NOT EXISTS `main_product` (
   `update_at` timestamp NULL DEFAULT NULL,
   `delete_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id_product`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table anya_coffee.main_product: ~0 rows (approximately)
+-- Dumping data for table anya_coffee.main_product: ~2 rows (approximately)
 /*!40000 ALTER TABLE `main_product` DISABLE KEYS */;
 INSERT INTO `main_product` (`id_product`, `name_product`, `image_product`, `price_product`, `desc_product`, `qty_product`, `category_id`, `homeDeliv`, `dineIn`, `takeaway`, `status_product`, `time_start`, `time_end`, `code_discount`, `create_at`, `update_at`, `delete_at`) VALUES
-	(1, 'Nasi Goreng Pete', '2021-02-16T15-53-01.197Znasgor.jpg', 20000, 'Makanan Pembuka Terbaik Dikalangan Masyarakat Indonesia', 50, 3, 'OFF', 'ON', 'ON', 'ON', '7 am', '4 pm', '', '2021-02-16 15:53:01', '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+	(1, 'Nasi Goreng Pete', '2021-02-17T08-10-00.968Znasgor.jpg', 20000, 'Makanan Pembuka Terbaik Dikalangan Masyarakat Indonesia', 50, 3, 'OFF', 'ON', 'ON', 'ON', '7 am', '4 pm', NULL, '2021-02-17 16:10:00', '2021-02-17 16:10:00', '0000-00-00 00:00:00'),
+	(2, 'Ayam Kremens', '2021-02-17T08-08-15.804Zayam.jpg', 233333, 'Makanan Pembuka Terbaik Dikalangan Masyarakat Indonesia', 25, 4, 'ON', 'OFF', 'OFF', 'ON', '3 am', '9 pm', '', '2021-02-17 16:08:15', NULL, NULL);
 /*!40000 ALTER TABLE `main_product` ENABLE KEYS */;
 
 -- Dumping structure for table anya_coffee.size_typeproduct
@@ -143,13 +144,14 @@ CREATE TABLE IF NOT EXISTS `size_typeproduct` (
   `size_400` enum('ON','OFF') NOT NULL DEFAULT 'OFF',
   `status_product` enum('ON','OFF') NOT NULL DEFAULT 'ON',
   PRIMARY KEY (`id_size`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table anya_coffee.size_typeproduct: ~2 rows (approximately)
+-- Dumping data for table anya_coffee.size_typeproduct: ~3 rows (approximately)
 /*!40000 ALTER TABLE `size_typeproduct` DISABLE KEYS */;
 INSERT INTO `size_typeproduct` (`id_size`, `id_Product`, `type`, `size_L`, `size_R`, `size_XL`, `size_200`, `size_350`, `size_400`, `status_product`) VALUES
 	(1, 1, 'Product', 'OFF', 'OFF', 'OFF', 'ON', 'ON', 'OFF', 'ON'),
-	(2, 1, 'Promo', 'OFF', 'OFF', 'OFF', 'ON', 'ON', 'OFF', 'ON');
+	(2, 1, 'Promo', 'OFF', 'OFF', 'OFF', 'ON', 'ON', 'OFF', 'ON'),
+	(3, 2, 'Product', 'OFF', 'OFF', 'OFF', 'ON', 'ON', 'OFF', 'ON');
 /*!40000 ALTER TABLE `size_typeproduct` ENABLE KEYS */;
 
 -- Dumping structure for table anya_coffee.user
@@ -158,26 +160,27 @@ CREATE TABLE IF NOT EXISTS `user` (
   `username` varchar(100) DEFAULT NULL,
   `email_user` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   `password` varchar(100) DEFAULT NULL,
-  `first_name` varchar(50) DEFAULT NULL,
-  `last_name` varchar(50) DEFAULT NULL,
+  `first_name` varchar(50) NOT NULL DEFAULT '',
+  `last_name` varchar(50) NOT NULL DEFAULT '',
   `image_user` varchar(150) DEFAULT NULL,
   `date_birth` date DEFAULT NULL,
   `phone_number` varchar(50) DEFAULT NULL,
-  `address_user` varchar(150) DEFAULT NULL,
+  `address_user` varchar(150) DEFAULT '',
   `token_user` varchar(100) DEFAULT NULL,
-  `gender` enum('MALE','FEMALE') DEFAULT NULL,
+  `gender` enum('MALE','FEMALE') NOT NULL,
   `roles` tinyint(2) DEFAULT NULL,
   `status` enum('ON','OFF') NOT NULL DEFAULT 'OFF',
   `create_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `update_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id_user`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
 
--- Dumping data for table anya_coffee.user: ~2 rows (approximately)
+-- Dumping data for table anya_coffee.user: ~3 rows (approximately)
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` (`id_user`, `username`, `email_user`, `password`, `first_name`, `last_name`, `image_user`, `date_birth`, `phone_number`, `address_user`, `token_user`, `gender`, `roles`, `status`, `create_at`, `update_at`) VALUES
-	(1, 'Cotlinz', 'rdy.galih@gmail.com', '$2b$10$ux6CLxigHRlC7zIqH8Q7g.b8oLeuEp5sh9oyuh3t2B.84k7f.nHRy', '', '', '', '0000-00-00', '082350775253', '', '', NULL, 1, 'ON', '2021-02-16 15:48:30', '0000-00-00 00:00:00'),
-	(2, 'Rizqon', 'rizqonmaulana5@gmail.com', '$2b$10$s6HZvfe1zsf7jhnOyZeDEeGrf8RhxGOqOkhQAv3XzE8uVaNOaJ/K2', 'Riskon', 'Konriz', '2021-02-16T15-59-10.849Zimages.jpg', '1991-01-09', '082323563546', 'SepingganKecamatan Balikpapan Selatan, Kota Balikpapan, Kalimantan Timur', '', '', 0, 'ON', '2021-02-16 15:49:31', '2021-02-16 15:59:10');
+	(1, 'Cotlinz', 'rdy.galih@gmail.com', '$2b$10$ux6CLxigHRlC7zIqH8Q7g.b8oLeuEp5sh9oyuh3t2B.84k7f.nHRy', '', '', '', '2021-02-17', '082350775253', '', '', '', 1, 'ON', '2021-02-17 16:02:29', '2021-02-17 16:02:11'),
+	(2, 'Rizqon', 'rizqonmaulana5@gmail.com', '$2b$10$s6HZvfe1zsf7jhnOyZeDEeGrf8RhxGOqOkhQAv3XzE8uVaNOaJ/K2', 'Riskon', 'Konriz', '2021-02-16T15-59-10.849Zimages.jpg', '1991-01-09', '082323563546', 'SepingganKecamatan Balikpapan Selatan, Kota Balikpapan, Kalimantan Timur', '', '', 0, 'ON', '2021-02-16 15:49:31', '2021-02-16 15:59:10'),
+	(3, 'Rampo', 'co.tlinz121@gmail.com', '$2b$10$yozEQLb1iLIm0vvq2rgPOOxLT1gXJKQkRFDdM4gdKxqndkzqztNA6', '', '', NULL, '2021-02-20', '082343343431', '', NULL, '', 1, 'ON', '2021-02-17 16:47:07', '2021-02-17 16:47:07');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
