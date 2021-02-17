@@ -25,7 +25,7 @@ module.exports = {
   getHistoryByIduser: (id) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        'select * from history_product where user_id = ? && status_history = "OFF" && delete_at = "0000-00-00"',
+        'select * from history_product where user_id = ? && status_history = "OFF" && UNIX_TIMESTAMP(delete_at) = 0',
         id,
         (err, result) => {
           !err ? resolve(result) : reject(new Error(err))
