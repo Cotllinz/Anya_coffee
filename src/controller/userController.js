@@ -202,16 +202,23 @@ module.exports = {
             imageUser = {
               image_user: getEmail[0].image_user
             }
-          } else if (getEmail[0].image_user === null) {
+          } else if (
+            getEmail[0].image_user === null ||
+            getEmail[0].image_user === ''
+          ) {
             imageUser = {
               image_user: req.file === undefined ? '' : req.file.filename
             }
           } else if (req.file.filename !== getEmail[0].image_user) {
-            fs.unlink(`./userImage/${getEmail[0].image_user}`, (err) => {
-              if (err) throw err
-              // if no error, file has been deleted successfully
-              console.log(`Success Delete Image ${getEmail[0].image_user}`)
-            })
+            fs.stat(
+              `./userImage/${getEmail[0].image_user}`,
+              function (_err, stats) {
+                fs.unlink(`./userImage/${getEmail[0].image_user}`, (_err) => {
+                  console.log(`Success Delete Image ${getEmail[0].image_user}`)
+                })
+              }
+            )
+
             imageUser = {
               image_user: req.file === undefined ? '' : req.file.filename
             }
