@@ -52,6 +52,7 @@ module.exports = {
           }
           transporter.sendMail(mailOPtion, (err, result) => {
             if (err) {
+              console.log(err)
               return helper.response(res, 400, 'Error Send Email', err)
             } else {
               console.log('Success Send Email !!!')
