@@ -1,6 +1,20 @@
-<h1 align="center">ExpressJS - Anya Coffee RESTfull API</h1>
+<h1 align='center'>Express JS - Get Dream Job</h1>
+  <p align="center">
+    <a href="https://documenter.getpostman.com/view/8217070/TVsoGAVc">View Postman</a>
+    ·
+    <a href="https://github.com/Cotllinz/Anya_coffee/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/Cotllinz/Anya_coffee/pulls">Request Feature</a>
+  </p>
 
-![alt text](https://github.com/Cotllinz/Anya_coffee/blob/main/Background_application/View%20Application.PNG)
+![Image Banner](https://raw.githubusercontent.com/Cotllinz/anya_coffee_frontend/master/public/smartmockups_kl9686ip.jpg)
+
+## About The Project
+
+Anya Coffee is a website that made for the purchase of various products such as coffee and other foods intended for fans of anya geraldine
+this website build with tools etc. Vue, Express,js Mysql, Node.js.
+
+
 [More about Express](https://en.wikipedia.org/wiki/Express.js)
 
 ## Built With
@@ -35,9 +49,10 @@ DB_HOST=127.0.0.1 // Database host
 DB_USER=root // Database username
 DB_PASS=  // Database Password
 DB_DATABASE=anya_coffee // Database name
-DB_ZONE=UTC // Database Time Zone
 PORT=3000 // My Using PORT
- 
+
+user=admin@gmail.com // User Node Mailer
+pass=nowrap123 // Password Node Mailer
 ```
 
 ## License
