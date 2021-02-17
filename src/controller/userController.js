@@ -230,7 +230,7 @@ module.exports = {
             date_birth: dateBirth,
             phone_number: phoneNumber,
             address_user: addressUser,
-            gender: Gender,
+            gender: Gender || 'NONE',
             status: 'ON',
             update_at: new Date()
           }
