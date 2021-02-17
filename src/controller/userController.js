@@ -50,7 +50,7 @@ module.exports = {
             subject: `Hello ${userName}, Anya Coffee`,
             html: `<h2>Hello ${userName} Thanks You for Register in Anya Coffee for activation your account please login first</h2>
                   <p>Click This Link For Activation ur account</p>
-                  <a href="https://getdreamjob.netlify.app/Login">Click This Button</a>`
+                  <a href="https://anya-coffeeshop.netlify.app/Login">Click This Button</a>`
           }
           transporter.sendMail(mailOPtion, (err, result) => {
             if (err) {
