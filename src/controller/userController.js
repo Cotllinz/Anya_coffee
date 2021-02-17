@@ -37,25 +37,26 @@ module.exports = {
           const result = await regisUserModel(setData)
           const transporter = nodemailer.createTransport({
             service: 'gmail',
+            port: 587,
+            secure: false,
             auth: {
               user: process.env.user,
               pass: process.env.pass
             }
           })
           const mailOPtion = {
-            from: `${process.env.user}`,
+            from: `"Get Dream Job "${process.env.user}`,
             to: `${userEmail}`,
             subject: `Hello ${userName}, Anya Coffee`,
             html: `<h2>Hello ${userName} Thanks You for Register in Anya Coffee for activation your account please login first</h2>
                   <p>Click This Link For Activation ur account</p>
-                  <a href ="http://localhost:8081/Login">Activation Email</a>`
+                  <a href="https://getdreamjob.netlify.app/Login">Click This Button</a>`
           }
           transporter.sendMail(mailOPtion, (err, result) => {
             if (err) {
-              console.log(err)
               return helper.response(res, 400, 'Error Send Email', err)
             } else {
-              console.log('Success Send Email !!!')
+              return helper.response(res, 200, 'Success Send Email', result)
             }
           })
           return helper.response(
