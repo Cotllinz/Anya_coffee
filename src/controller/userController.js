@@ -45,7 +45,7 @@ module.exports = {
             }
           })
           const mailOPtion = {
-            from: `"Get Dream Job "${process.env.user}`,
+            from: `"Anya Coffee "${process.env.user}`,
             to: `${userEmail}`,
             subject: `Hello ${userName}, Anya Coffee`,
             html: `<h2>Hello ${userName} Thanks You for Register in Anya Coffee for activation your account please login first</h2>
@@ -95,13 +95,15 @@ module.exports = {
           if (result[0].status === 'OFF') {
             const transporter = nodemailer.createTransport({
               service: 'gmail',
+              port: 587,
+              secure: false,
               auth: {
                 user: process.env.user,
                 pass: process.env.pass
               }
             })
             const mailOPtion = {
-              from: `${process.env.user}`,
+              from: `"Anya Coffee "${process.env.user}`,
               to: `${result[0].email_user}`,
               subject: `Thanks You ${userRoles} ${result[0].username} || Anya Coffee`,
               html: `<h2>Hello ${userRoles} ${result[0].username} Thanks You for activation your account Enjoy Shopping</h2>`
