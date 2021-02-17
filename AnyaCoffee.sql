@@ -167,7 +167,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `phone_number` varchar(50) DEFAULT NULL,
   `address_user` varchar(150) DEFAULT '',
   `token_user` varchar(100) DEFAULT NULL,
-  `gender` enum('MALE','FEMALE') NOT NULL,
+  `gender` enum('MALE','FEMALE','NONE') NOT NULL DEFAULT 'NONE',
   `roles` tinyint(2) DEFAULT NULL,
   `status` enum('ON','OFF') NOT NULL DEFAULT 'OFF',
   `create_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
