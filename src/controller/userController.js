@@ -231,7 +231,7 @@ module.exports = {
             username: userName,
             first_name: firstName,
             last_name: lastName,
-            date_birth: dateBirth,
+            date_birth: dateBirth || '0000-00-00',
             phone_number: phoneNumber,
             address_user: addressUser,
             gender: Gender || 'NONE',
