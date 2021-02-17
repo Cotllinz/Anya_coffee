@@ -249,6 +249,7 @@ module.exports = {
         return helper.response(res, 400, `Your Email ${email} not found`)
       }
     } catch (err) {
+      console.log(err)
       return helper.response(res, 400, 'Bad Request', err)
     }
   },
